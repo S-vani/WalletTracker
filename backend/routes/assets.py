@@ -3,12 +3,14 @@ import uuid
 from fastapi import HTTPException, File, UploadFile, Form, Depends, APIRouter
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from typing import Annotated
 
 from backend.authentication.authentication import current_active_user
 from backend.db.database import get_async_session
 from backend.db_models.assets import Post, User
 
 router = APIRouter()
+
 
 @router.post("/upload")
 async def upload_file(

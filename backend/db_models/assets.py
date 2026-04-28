@@ -3,11 +3,12 @@ import uuid
 from datetime import datetime
 
 from dotenv import load_dotenv
-from fastapi_users import BaseUserManager, UUIDIDMixin
+from fastapi_users import BaseUserManager, UUIDIDMixin, schemas, models
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID
 from sqlalchemy import Column, String, Text, DateTime, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import DeclarativeBase, relationship
+from starlette.requests import Request
 
 load_dotenv()
 
@@ -22,6 +23,10 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
 class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     reset_password_token_secret = os.getenv("SECRET")
     verification_token_secret = os.getenv("SECRET")
+
+    async def on_after_register(self, user: models.UP, request: Request | None = None) -> None:
+        # Pass for now but later will add a email verification system
+        pass
 
 
 class Post(Base):
