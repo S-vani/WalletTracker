@@ -22,6 +22,5 @@ app.include_router(fastapi_users.get_users_router(UserRead, UserUpdate), prefix=
 app.include_router(user_router)
 
 
-
 if __name__ == "__main__":
     uvicorn.run("app.app:app", host="0.0.0.0", port=8000, reload=True)

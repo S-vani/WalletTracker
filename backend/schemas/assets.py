@@ -3,10 +3,10 @@ from fastapi_users import schemas
 import uuid
 
 class UserRead(schemas.BaseUser[uuid.UUID]):
-    pass
+    name: str
 
 class UserCreate(schemas.BaseUserCreate):
-    pass
+    name: str
 
 class UserUpdate(schemas.BaseUserUpdate):
     pass

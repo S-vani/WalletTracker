@@ -3,8 +3,7 @@ import uuid
 from datetime import datetime
 
 from dotenv import load_dotenv
-from fastapi import Request
-from fastapi_users import BaseUserManager, UUIDIDMixin, models
+from fastapi_users import BaseUserManager, UUIDIDMixin
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID
 from sqlalchemy import Column, String, Text, DateTime, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
@@ -16,16 +15,13 @@ class Base(DeclarativeBase):
     pass
 
 class User(SQLAlchemyBaseUserTableUUID, Base):
+    name = Column(String, nullable=False)
+
     posts = relationship("Post", back_populates="user")
 
 class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     reset_password_token_secret = os.getenv("SECRET")
     verification_token_secret = os.getenv("SECRET")
-
-    async def on_after_register(
-            self, user: models.UP, request: Request | None = None
-    ) -> None:
-        print("User has registered")
 
 
 class Post(Base):
