@@ -1,37 +1,50 @@
 import uuid
 
 from fastapi import HTTPException, File, UploadFile, Form, Depends, APIRouter
-from sqlalchemy import select
+from sqlalchemy import select, Numeric
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import Annotated
+from typing import Annotated, Literal
 
 from backend.authentication.authentication import current_active_user
 from backend.db.database import get_async_session
-from backend.db_models.assets import Post, User
+from backend.db_models.assets import Transaction, User
+from backend.schemas.assets import CreateTransaction
+
+from backend.services.asset_services import get_holdings, current_quantity
 
 router = APIRouter()
 
+@router.get("/holdings/{symbol}")
+async def return_holdings(
+        symbol: str,
+        session: AsyncSession = Depends(get_async_session),
+        current_user: User = Depends(current_active_user),
+):
+    return await get_holdings(session, current_user.id, symbol)
 
-@router.post("/upload")
-async def upload_file(
-        file: UploadFile = File(...),
-        caption: str = Form(""),
+@router.post("/transaction")
+async def make_transaction(
+        data: CreateTransaction,
         session: AsyncSession = Depends(get_async_session),
         current_user: User = Depends(current_active_user)
 ):
-    print("helloworld")
-    post = Post(
-        caption=caption,
-        user_id=current_user.id,
-        url="url",
-        file_type="photo",
-        file_name="name"
-    )
-    session.add(post)
-    await session.commit()
-    await session.refresh(post)
-    return post
+    if data.action == "SELL":
+        curr_holdings = await current_quantity(session, current_user.id, data.symbol)
+        if data.quantity > curr_holdings:
+            raise HTTPException(status_code=409, detail="Insufficient holdings") # Error if you are trying to sell more than you have
 
+    purchase = Transaction(
+        action=data.action,
+        asset_type=data.asset_type,
+        symbol=data.symbol,
+        price_of_one=data.price_of_one,
+        quantity=data.quantity,
+        user_id=current_user.id
+    )
+    session.add(purchase)
+    await session.commit()
+    await session.refresh(purchase)
+    return purchase
 
 @router.get("/feed")
 async def get_feed(session: AsyncSession = Depends(get_async_session)):
