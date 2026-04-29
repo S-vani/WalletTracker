@@ -13,7 +13,7 @@ from backend.db_models.assets import Transaction, User
 from backend.schemas.assets import CreateTransaction
 
 from backend.services.asset_services import get_holdings_from_symbol, current_quantity, create_holding_filter, \
-    turn_list_to_dict
+    turn_list_to_dict, calculate_profit_for_one_transaction
 
 router = APIRouter()
 
@@ -81,13 +81,18 @@ async def make_transaction(
         session: AsyncSession = Depends(get_async_session),
         current_user: User = Depends(current_active_user)
 ):
+    profit_calculated = 0.0
     if data.action == "SELL":
         curr_holdings = await current_quantity(session, current_user.id, data.symbol)
         if data.quantity > curr_holdings:
             raise HTTPException(status_code=409, detail="Insufficient holdings") # Error if you are trying to sell more than you have
+        profit_calculated = await calculate_profit_for_one_transaction(session,
+                                                                 current_user.id,
+                                                                 data)  # Calculate profit for the sell
 
     transaction = Transaction(
         action=data.action,
+        profit=profit_calculated,
         asset_type=data.asset_type,
         symbol=data.symbol,
         price_of_one=data.price_of_one,

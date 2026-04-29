@@ -5,6 +5,9 @@ from backend.db_models.assets import Transaction
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import UUID
 
+from backend.schemas.assets import CreateTransaction
+
+
 async def get_holdings_from_symbol(db: AsyncSession, user_id:UUID, symbol:str):
     result = await db.execute(
         select(Transaction).where(
@@ -14,6 +17,46 @@ async def get_holdings_from_symbol(db: AsyncSession, user_id:UUID, symbol:str):
     )
 
     return result.scalars().all()
+
+async def calculate_profit_for_one_transaction(db: AsyncSession, user_id:UUID, data: CreateTransaction):
+    result = await db.execute(
+        select(Transaction).where(
+            Transaction.user_id == user_id,
+            Transaction.symbol == data.symbol
+        )
+        .order_by(Transaction.created_at.asc())
+    )
+
+    transactions = result.scalars().all()
+
+    quantity = 0.0
+    avg_cost = 0.0
+
+    for t in transactions:
+        if t.action == "BUY":
+            qty = float(t.quantity)
+            price = float(t.price_of_one)
+
+            new_qty = quantity + qty
+
+            avg_cost = (
+                (quantity * avg_cost + qty * price) / new_qty
+                if new_qty > 0 else 0.0
+            )
+
+            quantity = new_qty
+
+        elif t.action == "SELL":
+            qty = float(t.quantity)
+            quantity -= qty
+
+    sell_qty = float(data.quantity)
+    sell_price = float(data.price_of_one)
+
+    profit = (sell_price - avg_cost) * sell_qty
+
+    return profit
+
 
 def create_holding_filter(
                                 user_id: UUID,
