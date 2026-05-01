@@ -1,19 +1,15 @@
 import asyncio
-import uuid
 from datetime import datetime, timedelta
-from tkinter.tix import Select
 
-from fastapi import HTTPException, File, UploadFile, Form, Depends, APIRouter
-from sqlalchemy import select, Numeric
+from fastapi import HTTPException, Depends, APIRouter
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import Annotated, Literal, Optional
 
 from backend.authentication.authentication import current_active_user
 from backend.db.database import get_async_session
 from backend.db_models.assets import Transaction, User
 from backend.schemas.assets import CreateTransaction
-
-from backend.services.asset_services import get_holdings_from_symbol, current_quantity, create_holding_filter, \
+from backend.services.asset_services import current_quantity, create_holding_filter, \
     turn_list_to_dict, calculate_profit_for_one_transaction, get_curr_holdings_prices, \
     get_holdings_at_time, get_portfolio_value_at, get_cash_flow_between, get_total_realized_profit
 

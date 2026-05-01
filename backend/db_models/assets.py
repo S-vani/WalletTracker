@@ -3,9 +3,9 @@ import uuid
 from datetime import datetime
 
 from dotenv import load_dotenv
-from fastapi_users import BaseUserManager, UUIDIDMixin, schemas, models
+from fastapi_users import BaseUserManager, UUIDIDMixin, models
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID
-from sqlalchemy import Column, String, Text, DateTime, ForeignKey, Numeric, Computed
+from sqlalchemy import Column, String, DateTime, ForeignKey, Numeric
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import DeclarativeBase, relationship
 from starlette.requests import Request

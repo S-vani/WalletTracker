@@ -1,16 +1,13 @@
 from datetime import datetime, timedelta
 
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.sql.functions import now
-
-from backend.db_models.assets import Transaction
-from sqlalchemy import select
-from sqlalchemy.dialects.postgresql import UUID
-
-from backend.schemas.assets import CreateTransaction
-
 import httpx
 import yfinance as yf
+from sqlalchemy import select
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from backend.db_models.assets import Transaction
+from backend.schemas.assets import CreateTransaction
 
 
 async def get_holdings_from_symbol(db: AsyncSession, user_id:UUID, symbol:str):
