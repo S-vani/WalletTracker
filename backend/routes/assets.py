@@ -50,7 +50,7 @@ async def delete_transaction_with_id(
         current_user: User = Depends(current_active_user),
 ):
     """
-    When given an id delete the transaction from our history.
+    When given an id delete the transaction from the users history.
 
     Note that the user won't actually be entering a transaction id, this is mainly used as a helper to
     fetch certain transactions and also so when the user is on the transactions page, they can select a specific transaction
@@ -80,14 +80,14 @@ async def update_transaction_with_id(
         current_user: User = Depends(current_active_user),
 ):
     """
-    When given an id delete the transaction from our history.
+    When given an id update the transaction with the new information the user passes in.
 
-    Note that the user won't actually be entering a transaction id, this is mainly used as a helper to
-    fetch certain transactions and also so when the user is on the transactions page, they can select a specific transaction
-    and based on what they click the front end will automatically send the id here to delete the transaction.
+    Note that the user won't actually be entering a transaction id, they will select buttons from the front end that will
+    automatically call this route with the information inputted by the user.
     """
     transaction = return_transaction_with_id(trans_id, session, current_user)
 
+    # Check exactly what was sent in
     if updates.symbol:
         transaction.symbol = updates.symbol
     if updates.action:
@@ -111,6 +111,19 @@ async def return_holdings_with_filter(
         session: AsyncSession = Depends(get_async_session),
         current_user: User = Depends(current_active_user),
 ):
+    """
+    User can filter the transactions by sending specific information and seen in the parameters and it will return a
+    list where each entry is a dictionary like this:
+                "id": str(trans.id),
+                "user_id": str(trans.user_id),
+                "action": str(trans.action),
+                "asset_type": str(trans.asset_type),
+                "symbol": str(trans.symbol),
+                "api_ids": str(trans.api_id),
+                "price_of_one": float(trans.price_of_one),
+                "quantity": float(trans.quantity),
+                "created_at": trans.created_at.isoformat()
+    """
     query = create_holding_filter(current_user.id, symbol, action, start_date, end_date)
 
     result = await session.execute(query.order_by(Transaction.created_at.desc()))
@@ -124,11 +137,18 @@ async def make_transaction(
         session: AsyncSession = Depends(get_async_session),
         current_user: User = Depends(current_active_user)
 ):
+    """
+    The route used to make a transaction where the user enters the data manually and then if it is a sell,
+    the profit is calculated and set up. This variable profit that comes with every sell transaction is used later to
+    calculate realized profit by simply looping through every sell and adding the profit made. A transaction instance is made
+    the added to the database.
+    """
     profit_calculated = 0.0
     if data.action == "SELL":
         curr_holdings = await current_quantity(session, current_user.id, data.symbol)
         if data.quantity > curr_holdings:
             raise HTTPException(status_code=409, detail="Insufficient holdings") # Error if you are trying to sell more than you have
+
         profit_calculated = await calculate_profit_for_one_transaction(session,
                                                                  current_user.id,
                                                                  data)  # Calculate profit for the sell
@@ -153,6 +173,9 @@ async def current_holdings(
         session: AsyncSession = Depends(get_async_session),
         current_user: User = Depends(current_active_user)
 ):
+    """
+    Return a dictionary that maps the api_id to another dictionary with the quantity, average price and type of transaction.
+    """
     return await get_holdings_at_time(session, current_user.id, datetime.utcnow())
 
 @router.get("/portfolio")
@@ -160,12 +183,16 @@ async def portfolio_stats(
         session: AsyncSession = Depends(get_async_session),
         current_user: User = Depends(current_active_user)
 ):
+    """
+    Return a dictionary that maps many things including the total value of the portfolio, the daily, weekly, monthly, yearly
+    and all time profits.
+    """
     now = datetime.utcnow()
 
-    # current
+    # current holdings
     holdings = await get_holdings_at_time(session, current_user.id, now)
 
-    if not holdings:
+    if not holdings: # If user doesn't have any holdings
         return {
             "value": 0.0,
             "profit": 0.0,
@@ -175,18 +202,18 @@ async def portfolio_stats(
             "yearly": 0.0
         }
 
-    curr_prices = await get_curr_holdings_prices(holdings)
+    curr_prices = await get_curr_holdings_prices(holdings) # Get the current prices of all our holdings
 
     total_value = 0.0
     unrealized_profit = 0.0
 
     for api_id, data in holdings.items():
-        price = float(curr_prices.get(api_id, 0.0))
+        price = float(curr_prices.get(api_id, 0.0)) # Default to zero if we didn't fetch the price
         quantity = float(data["quantity"])
         avg_price = float(data["avg_price"])
 
-        position_value = price * quantity
-        cost_basis = avg_price * quantity
+        position_value = price * quantity # Current value of that holding
+        cost_basis = avg_price * quantity # Value that we bought it at
 
         total_value += position_value
         unrealized_profit += (position_value - cost_basis)
@@ -194,7 +221,7 @@ async def portfolio_stats(
     # ---- TIME WINDOWS ----
     one_day = now - timedelta(days=1)
     seven_days = now - timedelta(days=7)
-    thirty_one_days = now - timedelta(days=31)
+    thirty_one_days = now - timedelta(days=30)
     three_sixty_five_days = now - timedelta(days=365)
 
     # ---- PARALLEL TASKS ----
@@ -214,7 +241,7 @@ async def portfolio_stats(
 
     realized_task = get_total_realized_profit(session, current_user.id)
 
-    results = await asyncio.gather(
+    results = await asyncio.gather( # perform all these functions in parallel to save time
         *value_tasks,
         *cash_tasks,
         realized_task
