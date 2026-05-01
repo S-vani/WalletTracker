@@ -1,6 +1,8 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.sql.functions import now
+
 from backend.db_models.assets import Transaction
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import UUID
@@ -32,16 +34,101 @@ async def get_curr_holdings_prices(holdings: dict[str, dict[str, float | str]]):
             stocks.append(str(ids))
 
     # The 2 variables below are dicts like {api_id: curr_price}
-    crypto_prices = await get_crypto_prices(crypto)
-    stock_prices = await get_stock_prices(stocks)
+    crypto_prices = await get_crypto_prices_at(crypto, datetime.utcnow())
+    stock_prices = await get_stock_prices_at(stocks, datetime.utcnow())
 
     return crypto_prices | stock_prices
 
-async def get_curr_holdings(db: AsyncSession, user_id: UUID):
-    curr_holdings = {} # {api_id:{avg_price: float, quantity: float, type: str}}
+async def get_total_realized_profit(db: AsyncSession, user_id: UUID):
+    result = await db.execute(
+        select(Transaction)
+        .where(
+            Transaction.user_id == user_id,
+            Transaction.action == "SELL"
+        )
+    )
+
+    result = result.scalars().all()
+    total = 0.0
+
+    for transaction in result:
+        total += float(transaction.profit)
+
+    return total
+
+async def get_cash_flow_between(
+    db: AsyncSession,
+    user_id: UUID,
+    start: datetime,
+    end: datetime
+):
     result = await db.execute(
         select(Transaction).where(
-            Transaction.user_id == user_id
+            Transaction.user_id == user_id,
+            Transaction.created_at > start,
+            Transaction.created_at <= end
+        )
+    )
+
+    transactions = result.scalars().all()
+
+    cash_flow = 0.0
+
+    for t in transactions:
+        amount = float(t.price_of_one) * float(t.quantity)
+
+        if str(t.action) == "BUY":
+            cash_flow += amount
+        else:  # SELL
+            cash_flow -= amount
+
+    return cash_flow
+
+async def get_portfolio_value_at(
+    db: AsyncSession,
+    user_id: UUID,
+    timestamp: datetime
+):
+    holdings = await get_holdings_at_time(db, user_id, timestamp)
+
+    if not holdings:
+        return 0.0
+
+    crypto = []
+    stocks = []
+
+    for api_id, data in holdings.items():
+        if data["type"] == "crypto":
+            crypto.append(api_id)
+        else:
+            stocks.append(api_id)
+
+    crypto_prices = await get_crypto_prices_at(crypto, timestamp)
+    stock_prices = await get_stock_prices_at(stocks, timestamp)
+
+    prices = crypto_prices | stock_prices
+
+    total_value = 0.0
+
+    for api_id, data in holdings.items():
+        price = float(prices.get(api_id, 0.0))
+        quantity = float(data["quantity"])
+        total_value += price * quantity
+
+    return total_value
+
+async def get_holdings_at_time(
+    db: AsyncSession,
+    user_id: UUID,
+    timestamp: datetime
+):
+    curr_holdings = {}
+
+    result = await db.execute(
+        select(Transaction)
+        .where(
+            Transaction.user_id == user_id,
+            Transaction.created_at <= timestamp
         )
         .order_by(Transaction.created_at.asc())
     )
@@ -49,30 +136,31 @@ async def get_curr_holdings(db: AsyncSession, user_id: UUID):
     transactions = result.scalars().all()
 
     for t in transactions:
+        api_id = str(t.api_id)
+
         if str(t.action) == "BUY":
-            transaction_api_id = str(t.api_id)
-            if transaction_api_id in curr_holdings:
-                curr_holdings[transaction_api_id]["avg_price"] = get_curr_holdings_helper(
-                    curr_holdings[transaction_api_id]["avg_price"],
+            if api_id in curr_holdings:
+                curr_holdings[api_id]["avg_price"] = get_holdings_helper(
+                    curr_holdings[api_id]["avg_price"],
                     t.price_of_one,
-                    curr_holdings[transaction_api_id]["quantity"],
+                    curr_holdings[api_id]["quantity"],
                     t.quantity
                 )
-                curr_holdings[transaction_api_id]["quantity"] += t.quantity
+                curr_holdings[api_id]["quantity"] += t.quantity
             else:
-                curr_holdings[transaction_api_id] = {}
-                curr_holdings[transaction_api_id]["avg_price"] = t.price_of_one
-                curr_holdings[transaction_api_id]["quantity"] = t.quantity
-                curr_holdings[transaction_api_id]["type"] = t.asset_type
+                curr_holdings[api_id] = {
+                    "avg_price": t.price_of_one,
+                    "quantity": t.quantity,
+                    "type": t.asset_type
+                }
 
-        else: # if the action is SELL
-            transaction_api_id = str(t.api_id)
-            if transaction_api_id in curr_holdings:
-                curr_holdings[transaction_api_id]["quantity"] -= t.quantity
+        else:  # SELL
+            if api_id in curr_holdings:
+                curr_holdings[api_id]["quantity"] -= t.quantity
 
     return curr_holdings
 
-def get_curr_holdings_helper(curr_avg: float, new_price: float, curr_quantity: float, new_quantity: float):
+def get_holdings_helper(curr_avg: float, new_price: float, curr_quantity: float, new_quantity: float):
     total_cost = (curr_avg * curr_quantity) + (new_price * new_quantity)
     return total_cost / (curr_quantity + new_quantity)
 
@@ -87,54 +175,56 @@ async def get_usd_to_cad():
 
     return float(cad)
 
-async def get_crypto_prices(api_ids: list[str]):
+async def get_crypto_prices_at(api_ids: list[str], timestamp: datetime):
     if not api_ids:
         return {}
 
-    url = "https://api.coingecko.com/api/v3/simple/price"
-
-    params = {
-        "ids": ",".join(api_ids), # Required format for coingecko "bitcoin,ethereum,solana"
-        "vs_currencies": "cad"
-    }
-
-    async with httpx.AsyncClient() as client:
-        res = await client.get(url, params=params)
-        data = res.json() # convert to python dict
-
-    prices = {} # api_id: price
+    prices = {}
 
     for api_id in api_ids:
-        if api_id in data:
-            if "cad" in data[api_id]:
-                prices[api_id] = data[api_id]["cad"]
-            else:
-                prices[api_id] = 0.0
-        else:
-            prices[api_id] = 0.0
+        url = f"https://api.coingecko.com/api/v3/coins/{api_id}/history"
+        params = {
+            "date": timestamp.strftime("%d-%m-%Y")
+        }
 
-    print(prices)
+        async with httpx.AsyncClient() as client:
+            res = await client.get(url, params=params)
+            data = res.json()
+
+        try:
+            prices[api_id] = data["market_data"]["current_price"]["cad"]
+        except:
+            prices[api_id] = 0.0
 
     return prices
 
-async def get_stock_prices(symbols: list[str]):
+async def get_stock_prices_at(symbols: list[str], timestamp: datetime):
     if not symbols:
         return {}
 
-    tickers = yf.Tickers(" ".join(symbols)) # format into "AAPL TSLA VCN"
-
-    prices = {} # symbol: price
+    tickers = yf.Tickers(" ".join(symbols))
     conversion = await get_usd_to_cad()
+
+    prices = {}
 
     for symbol in symbols:
         try:
             ticker = tickers.tickers[symbol]
-            usd_price = float(ticker.fast_info["last_price"]) # fetch most recent trading price
-            prices[symbol] = usd_price * conversion
-        except Exception: # invalid symbols just fail silently
-            prices[symbol] = 0.0
 
-    print(prices)
+            hist = ticker.history(
+                start=timestamp.date(),
+                end=timestamp.date() + timedelta(days=1),
+                interval="1d"
+            )
+
+            if not hist.empty:
+                close_price = float(hist["Close"].iloc[0])
+                prices[symbol] = close_price * conversion
+            else:
+                prices[symbol] = 0.0
+
+        except Exception:
+            prices[symbol] = 0.0
 
     return prices
 

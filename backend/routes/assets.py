@@ -1,5 +1,6 @@
+import asyncio
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 from tkinter.tix import Select
 
 from fastapi import HTTPException, File, UploadFile, Form, Depends, APIRouter
@@ -13,7 +14,8 @@ from backend.db_models.assets import Transaction, User
 from backend.schemas.assets import CreateTransaction
 
 from backend.services.asset_services import get_holdings_from_symbol, current_quantity, create_holding_filter, \
-    turn_list_to_dict, calculate_profit_for_one_transaction, get_curr_holdings, get_curr_holdings_prices
+    turn_list_to_dict, calculate_profit_for_one_transaction, get_curr_holdings_prices, \
+    get_holdings_at_time, get_portfolio_value_at, get_cash_flow_between, get_total_realized_profit
 
 router = APIRouter()
 
@@ -110,22 +112,32 @@ async def current_holdings(
         session: AsyncSession = Depends(get_async_session),
         current_user: User = Depends(current_active_user)
 ):
-    return await get_curr_holdings(session, current_user.id)
+    return await get_holdings_at_time(session, current_user.id, datetime.utcnow())
 
 @router.get("/portfolio")
 async def portfolio_stats(
         session: AsyncSession = Depends(get_async_session),
         current_user: User = Depends(current_active_user)
 ):
-    holdings = await get_curr_holdings(session, current_user.id)
+    now = datetime.utcnow()
+
+    # current
+    holdings = await get_holdings_at_time(session, current_user.id, now)
 
     if not holdings:
-        return {"value": 0.0, "profit": 0.0}
+        return {
+            "value": 0.0,
+            "profit": 0.0,
+            "daily": 0.0,
+            "weekly": 0.0,
+            "monthly": 0.0,
+            "yearly": 0.0
+        }
 
     curr_prices = await get_curr_holdings_prices(holdings)
 
     total_value = 0.0
-    total_profit = 0.0
+    unrealized_profit = 0.0
 
     for api_id, data in holdings.items():
         price = float(curr_prices.get(api_id, 0.0))
@@ -135,10 +147,56 @@ async def portfolio_stats(
         position_value = price * quantity
         cost_basis = avg_price * quantity
 
-        total_value += float(position_value)
-        total_profit += float(position_value - cost_basis)
+        total_value += position_value
+        unrealized_profit += (position_value - cost_basis)
+
+    # ---- TIME WINDOWS ----
+    one_day = now - timedelta(days=1)
+    seven_days = now - timedelta(days=7)
+    thirty_one_days = now - timedelta(days=31)
+    three_sixty_five_days = now - timedelta(days=365)
+
+    # ---- PARALLEL TASKS ----
+    value_tasks = [
+        get_portfolio_value_at(session, current_user.id, one_day),
+        get_portfolio_value_at(session, current_user.id, seven_days),
+        get_portfolio_value_at(session, current_user.id, thirty_one_days),
+        get_portfolio_value_at(session, current_user.id, three_sixty_five_days),
+    ]
+
+    cash_tasks = [
+        get_cash_flow_between(session, current_user.id, one_day, now),
+        get_cash_flow_between(session, current_user.id, seven_days, now),
+        get_cash_flow_between(session, current_user.id, thirty_one_days, now),
+        get_cash_flow_between(session, current_user.id, three_sixty_five_days, now),
+    ]
+
+    realized_task = get_total_realized_profit(session, current_user.id)
+
+    results = await asyncio.gather(
+        *value_tasks,
+        *cash_tasks,
+        realized_task
+    )
+
+    # ---- UNPACK RESULTS ----
+    value_1d, value_7d, value_31d, value_365d = results[0:4]
+    cash_1d, cash_7d, cash_31d, cash_365d = results[4:8]
+    realized_profit = results[8]
+
+    # ---- FINAL PROFITS ----
+    daily_profit = (total_value - value_1d) - cash_1d
+    weekly_profit = (total_value - value_7d) - cash_7d
+    monthly_profit = (total_value - value_31d) - cash_31d
+    yearly_profit = (total_value - value_365d) - cash_365d
+
+    total_profit = unrealized_profit + realized_profit
 
     return {
         "value": total_value,
-        "profit": total_profit
+        "alltime": total_profit,
+        "daily": daily_profit,
+        "weekly": weekly_profit,
+        "monthly": monthly_profit,
+        "yearly": yearly_profit
     }
