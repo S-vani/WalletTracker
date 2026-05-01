@@ -1,14 +1,15 @@
 import asyncio
 from datetime import datetime, timedelta
+from typing import Optional, Literal
 
-from fastapi import HTTPException, Depends, APIRouter
+from fastapi import HTTPException, Depends, APIRouter, Query
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.authentication.authentication import current_active_user
 from backend.db.database import get_async_session
 from backend.db_models.assets import Transaction, User
-from backend.schemas.assets import CreateTransaction
+from backend.schemas.assets import CreateTransaction, UpdateTransaction
 from backend.services.asset_services import current_quantity, create_holding_filter, \
     turn_list_to_dict, calculate_profit_for_one_transaction, get_curr_holdings_prices, \
     get_holdings_at_time, get_portfolio_value_at, get_cash_flow_between, get_total_realized_profit
@@ -16,11 +17,19 @@ from backend.services.asset_services import current_quantity, create_holding_fil
 router = APIRouter()
 
 @router.get("/transactions/{trans_id}")
-async def return_holdings_with_id(
+async def return_transaction_with_id(
         trans_id: str,
         session: AsyncSession = Depends(get_async_session),
         current_user: User = Depends(current_active_user),
 ):
+    """
+    When given an id return exactly what transaction it is, if the id is not found return a 404 error.
+
+    Note that the user won't actually be entering a transaction id, this is mainly used as a helper to
+    fetch certain transactions and also so when the user is on the transactions page, they can select a specific transaction
+    and based on what they click the front end will automatically send the id here to return the information of
+    the transaction.
+    """
     result = await session.execute(
         select(Transaction).where(
             Transaction.user_id == current_user.id,
@@ -28,18 +37,25 @@ async def return_holdings_with_id(
         )
     )
 
-    transaction = result.scalars().first()
+    transaction = result.scalars().first() # we use .first since obviously when we are querying based off a transaction id there should only be one
     if transaction is None:
         raise HTTPException(status_code=404, detail="Transaction not found")
 
     return transaction
 
 @router.delete("/transactions/{trans_id}")
-async def delete_holding_with_id(
+async def delete_transaction_with_id(
         trans_id: str,
         session: AsyncSession = Depends(get_async_session),
         current_user: User = Depends(current_active_user),
 ):
+    """
+    When given an id delete the transaction from our history.
+
+    Note that the user won't actually be entering a transaction id, this is mainly used as a helper to
+    fetch certain transactions and also so when the user is on the transactions page, they can select a specific transaction
+    and based on what they click the front end will automatically send the id here to delete the transaction.
+    """
     holding = await session.execute(
         select(Transaction).where(
             Transaction.user_id == current_user.id,
@@ -56,13 +72,42 @@ async def delete_holding_with_id(
 
     return result
 
+@router.put("/transactions/{trans_id}")
+async def update_transaction_with_id(
+        trans_id: str,
+        updates: UpdateTransaction,
+        session: AsyncSession = Depends(get_async_session),
+        current_user: User = Depends(current_active_user),
+):
+    """
+    When given an id delete the transaction from our history.
+
+    Note that the user won't actually be entering a transaction id, this is mainly used as a helper to
+    fetch certain transactions and also so when the user is on the transactions page, they can select a specific transaction
+    and based on what they click the front end will automatically send the id here to delete the transaction.
+    """
+    transaction = return_transaction_with_id(trans_id, session, current_user)
+
+    if updates.symbol:
+        transaction.symbol = updates.symbol
+    if updates.action:
+        transaction.action = updates.action
+    if updates.asset_type:
+        transaction.asset_type = updates.asset_type
+    if updates.price_of_one:
+        transaction.price_of_one = updates.price_of_one
+    if updates.quantity:
+        transaction.quantity = updates.quantity
+    if updates.api_id:
+        transaction.api_id = updates.api_id
 
 @router.get("/transactions")
 async def return_holdings_with_filter(
-        symbol: str | None = None,
-        action: str | None = None,
-        start_date: datetime | None = None,
-        end_date: datetime | None = None,
+        symbol: Optional[str] = Query(None),
+        action: Optional[Literal["BUY", "SELL"]] = Query(None),
+        start_date: Optional[datetime] = Query(None),
+        end_date: Optional[datetime] = Query(None),
+
         session: AsyncSession = Depends(get_async_session),
         current_user: User = Depends(current_active_user),
 ):
