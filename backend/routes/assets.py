@@ -13,7 +13,7 @@ from backend.db_models.assets import Transaction, User
 from backend.schemas.assets import CreateTransaction
 
 from backend.services.asset_services import get_holdings_from_symbol, current_quantity, create_holding_filter, \
-    turn_list_to_dict, calculate_profit_for_one_transaction
+    turn_list_to_dict, calculate_profit_for_one_transaction, get_curr_holdings, get_curr_holdings_prices
 
 router = APIRouter()
 
@@ -95,6 +95,7 @@ async def make_transaction(
         profit=profit_calculated,
         asset_type=data.asset_type,
         symbol=data.symbol,
+        api_id=data.api_id,
         price_of_one=data.price_of_one,
         quantity=data.quantity,
         user_id=current_user.id
@@ -103,3 +104,41 @@ async def make_transaction(
     await session.commit()
     await session.refresh(transaction)
     return transaction
+
+@router.get("/holdings")
+async def current_holdings(
+        session: AsyncSession = Depends(get_async_session),
+        current_user: User = Depends(current_active_user)
+):
+    return await get_curr_holdings(session, current_user.id)
+
+@router.get("/portfolio")
+async def portfolio_stats(
+        session: AsyncSession = Depends(get_async_session),
+        current_user: User = Depends(current_active_user)
+):
+    holdings = await get_curr_holdings(session, current_user.id)
+
+    if not holdings:
+        return {"value": 0.0, "profit": 0.0}
+
+    curr_prices = await get_curr_holdings_prices(holdings)
+
+    total_value = 0.0
+    total_profit = 0.0
+
+    for api_id, data in holdings.items():
+        price = float(curr_prices.get(api_id, 0.0))
+        quantity = float(data["quantity"])
+        avg_price = float(data["avg_price"])
+
+        position_value = price * quantity
+        cost_basis = avg_price * quantity
+
+        total_value += float(position_value)
+        total_profit += float(position_value - cost_basis)
+
+    return {
+        "value": total_value,
+        "profit": total_profit
+    }

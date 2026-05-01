@@ -18,3 +18,4 @@ class CreateTransaction(BaseModel):
     asset_type: str
     price_of_one: float
     quantity: float
+    api_id: str

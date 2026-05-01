@@ -39,6 +39,7 @@ class Transaction(Base):
     profit = Column(Numeric(20, 10), default=0)
     asset_type = Column(String, nullable=False) # type of purchase (stock, crypto, currency, etc.)
     symbol = Column(String, nullable=False) # symbol or purchase (BTC, SMP500, AAPL, USD, etc.)
+    api_id = Column(String, nullable=False)
     price_of_one = Column(Numeric(20, 10), nullable=False)
     quantity = Column(Numeric(20, 10), nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
