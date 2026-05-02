@@ -11,6 +11,10 @@ from backend.schemas.assets import CreateTransaction
 
 
 async def get_holdings_from_symbol(db: AsyncSession, user_id:UUID, symbol:str):
+    """
+    Return a dictionary that maps many things including the total value of the portfolio, the daily, weekly, monthly, yearly
+    and all time profits.
+    """
     result = await db.execute(
         select(Transaction).where(
             Transaction.user_id == user_id,
