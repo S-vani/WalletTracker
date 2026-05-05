@@ -314,6 +314,7 @@ def turn_list_to_dict(lst):
                 "id": str(trans.id),
                 "user_id": str(trans.user_id),
                 "action": str(trans.action),
+                "profit": float(trans.profit),
                 "asset_type": str(trans.asset_type),
                 "symbol": str(trans.symbol),
                 "api_ids": str(trans.api_id),
