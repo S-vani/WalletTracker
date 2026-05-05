@@ -16,6 +16,7 @@ from backend.services.asset_services import current_quantity, create_holding_fil
 
 router = APIRouter()
 
+
 @router.get("/transactions/{trans_id}")
 async def return_transaction_with_id(
         trans_id: str,
@@ -37,11 +38,12 @@ async def return_transaction_with_id(
         )
     )
 
-    transaction = result.scalars().first() # we use .first since obviously when we are querying based off a transaction id there should only be one
+    transaction = result.scalars().first()  # we use .first since obviously when we are querying based off a transaction id there should only be one
     if transaction is None:
         raise HTTPException(status_code=404, detail="Transaction not found")
 
     return transaction
+
 
 @router.delete("/transactions/{trans_id}")
 async def delete_transaction_with_id(
@@ -72,6 +74,7 @@ async def delete_transaction_with_id(
 
     return result
 
+
 @router.put("/transactions/{trans_id}")
 async def update_transaction_with_id(
         trans_id: str,
@@ -100,6 +103,7 @@ async def update_transaction_with_id(
         transaction.quantity = updates.quantity
     if updates.api_id:
         transaction.api_id = updates.api_id
+
 
 @router.get("/transactions")
 async def return_holdings_with_filter(
@@ -131,6 +135,7 @@ async def return_holdings_with_filter(
 
     return turn_list_to_dict(result)
 
+
 @router.post("/transactions")
 async def make_transaction(
         data: CreateTransaction,
@@ -147,11 +152,12 @@ async def make_transaction(
     if data.action == "SELL":
         curr_holdings = await current_quantity(session, current_user.id, data.symbol)
         if data.quantity > curr_holdings:
-            raise HTTPException(status_code=409, detail="Insufficient holdings") # Error if you are trying to sell more than you have
+            raise HTTPException(status_code=409,
+                                detail="Insufficient holdings")  # Error if you are trying to sell more than you have
 
         profit_calculated = await calculate_profit_for_one_transaction(session,
-                                                                 current_user.id,
-                                                                 data)  # Calculate profit for the sell
+                                                                       current_user.id,
+                                                                       data)  # Calculate profit for the sell
 
     transaction = Transaction(
         action=data.action,
@@ -168,6 +174,7 @@ async def make_transaction(
     await session.refresh(transaction)
     return transaction
 
+
 @router.get("/holdings")
 async def current_holdings(
         session: AsyncSession = Depends(get_async_session),
@@ -177,6 +184,7 @@ async def current_holdings(
     Return a dictionary that maps the api_id to another dictionary with the quantity, average price and type of transaction.
     """
     return await get_holdings_at_time(session, current_user.id, datetime.utcnow())
+
 
 @router.get("/portfolio")
 async def portfolio_stats(
@@ -192,7 +200,7 @@ async def portfolio_stats(
     # current holdings
     holdings = await get_holdings_at_time(session, current_user.id, now)
 
-    if not holdings: # If user doesn't have any holdings
+    if not holdings:  # If user doesn't have any holdings
         return {
             "value": 0.0,
             "profit": 0.0,
@@ -202,18 +210,18 @@ async def portfolio_stats(
             "yearly": 0.0
         }
 
-    curr_prices = await get_curr_holdings_prices(holdings) # Get the current prices of all our holdings
+    curr_prices = await get_curr_holdings_prices(holdings)  # Get the current prices of all our holdings
 
     total_value = 0.0
     unrealized_profit = 0.0
 
     for api_id, data in holdings.items():
-        price = float(curr_prices.get(api_id, 0.0)) # Default to zero if we didn't fetch the price
+        price = float(curr_prices.get(api_id, 0.0))  # Default to zero if we didn't fetch the price
         quantity = float(data["quantity"])
         avg_price = float(data["avg_price"])
 
-        position_value = price * quantity # Current value of that holding
-        cost_basis = avg_price * quantity # Value that we bought it at
+        position_value = price * quantity  # Current value of that holding
+        cost_basis = avg_price * quantity  # Value that we bought it at
 
         total_value += position_value
         unrealized_profit += (position_value - cost_basis)
@@ -241,7 +249,7 @@ async def portfolio_stats(
 
     realized_task = get_total_realized_profit(session, current_user.id)
 
-    results = await asyncio.gather( # perform all these functions in parallel to save time
+    results = await asyncio.gather(  # perform all these functions in parallel to save time
         *value_tasks,
         *cash_tasks,
         realized_task

@@ -1,6 +1,5 @@
-
-function TransactionItem({transaction}){
-    return(
+function TransactionItem({transaction}) {
+    return (
         <div>
             <span>{transaction.symbol}</span>
             <span>{transaction.asset_type}</span>

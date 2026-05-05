@@ -1,9 +1,9 @@
 import TransactionItem from "./TransactionItem.jsx";
 
-function TransactionList({transactions}){
-    return(
+function TransactionList({transactions}) {
+    return (
         <div>
-            {transactions.map(t =>(
+            {transactions.map(t => (
                 <TransactionItem key={t.id} transaction={t}/>
             ))}
         </div>
