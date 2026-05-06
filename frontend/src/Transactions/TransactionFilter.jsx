@@ -1,51 +1,63 @@
-import { useState } from "react";
+import {useState} from "react";
 
-function TransactionFilter({ onFilter }) {
-  const [symbol, setSymbol] = useState("");
-  const [action, setAction] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+function TransactionFilter({onFiltered}){
+    const [form, setForm] = useState({
+        symbol: "",
+        action: "",
+        start_date: "",
+        end_date: "",
+    })
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+    const handleChange = async (e) =>{
+        setForm({
+            ...form,
+            [e.target.name]: e.target.value
+        })
 
-    onFilter({
-      symbol: symbol || undefined,
-      action: action || undefined,
-      start_date: startDate || undefined,
-      end_date: endDate || undefined,
-    });
-  };
+    };
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <input
-        placeholder="Symbol"
-        value={symbol}
-        onChange={(e) => setSymbol(e.target.value)}
-      />
+    const handleSubmit = async (e) => {
+        e.preventDefault()
 
-      <select value={action} onChange={(e) => setAction(e.target.value)}>
-        <option value="">All</option>
-        <option value="BUY">BUY</option>
-        <option value="SELL">SELL</option>
-      </select>
+        onFiltered(form);
+    };
 
-      <input
-        type="datetime-local"
-        value={startDate}
-        onChange={(e) => setStartDate(e.target.value)}
-      />
+    return(
+        <div>
+            <h2>Filter</h2>
 
-      <input
-        type="datetime-local"
-        value={endDate}
-        onChange={(e) => setEndDate(e.target.value)}
-      />
+            <form onSubmit={handleSubmit}>
+                <input name="symbol" placeholder="Symbol" onChange={handleChange}/>
 
-      <button type="submit">Filter</button>
-    </form>
-  );
+                <select name="action" onChange={handleChange}>
+                    <option value="">ALL</option>
+                    <option value="BUY">BUY</option>
+                    <option value="SELL">SELL</option>
+                </select>
+
+                <div>
+                    <label>Start</label>
+                    <input
+                        type="date"
+                        name="start_date"
+                        onChange={handleChange}
+                    />
+                </div>
+
+
+                <div>
+                    <label>End</label>
+                    <input
+                        type="date"
+                        name="end_date"
+                        onChange={handleChange}
+                    />
+                </div>
+
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    )
 }
 
-export default TransactionFilter;
+export default TransactionFilter

@@ -10,8 +10,25 @@ function getAuthHeaders() {
     };
 }
 
-export async function getTransactions() {
-    const res = await fetch(`${BASE_URL}/transactions`, {
+export async function getTransactions(filters ={}) {
+    const params = new URLSearchParams()
+
+    if (filters.symbol){
+        params.append("symbol", filters.symbol)
+    }
+    if (filters.action){
+        params.append("action", filters.action)
+    }
+    if (filters.start_date){
+        params.append("start_date", new Date(filters.start_date).toISOString())
+    }
+    if (filters.end_date){
+        params.append("end_date", new Date(filters.end_date).toISOString())
+    }
+
+
+
+    const res = await fetch(`${BASE_URL}/transactions?${params.toString()}`, {
         headers: getAuthHeaders(),
     });
 
@@ -28,6 +45,7 @@ export async function createTransaction(data) {
         ...data,
         api_id:"bitcoin"
     }
+
     const res = await fetch(`${BASE_URL}/transactions`, {
         method: "POST",
         headers: getAuthHeaders(),

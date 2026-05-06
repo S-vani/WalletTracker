@@ -2,19 +2,21 @@ import {useEffect, useState} from "react";
 import {getTransactions} from "../services/api";
 import TransactionList from "../Transactions/TransactionList";
 import TransactionCreate from "../Transactions/TransactionCreate.jsx"
+import TransactionFilter from "../Transactions/TransactionFilter.jsx"
 
 function TransactionsPage() {
     const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [showForm, setShowForm] = useState(false);
+    const [showAddForm, setShowAddForm] = useState(false);
+    const [showFilterForm, setShowFilterForm] = useState(false)
 
-    const loadTransactions = async () => {
+    const loadTransactions = async (filters = {}) => {
         try {
             setLoading(true);
             setError(null);
 
-            const data = await getTransactions();
+            const data = await getTransactions(filters);
             setTransactions(data);
         } catch (err) {
             setError(err.message);
@@ -30,19 +32,32 @@ function TransactionsPage() {
     return (
         <div>
             <h1>Transactions</h1>
-            {loading && <p>Loading...</p>}{error && <p>{error}</p>}
+            {loading && <p>Loading...</p>}
+            {error && <p>{error}</p>}
             <TransactionList transactions={transactions}/>
 
-            <button onClick={() => setShowForm(true)}>
+            <button onClick={() => setShowAddForm(true)}>
                 Add
             </button>
-            {showForm && (
+            {showAddForm && (
                 <TransactionCreate
-                    onClose={() => setShowForm(false)}
+                    onClose={() => setShowAddForm(false)}
                     onCreated={loadTransactions}
                 />
             )}
-            
+
+            <button onClick={() => setShowFilterForm(true)}>
+                Filter
+            </button>
+
+            {showFilterForm &&(
+                <TransactionFilter
+                    onFiltered={loadTransactions}
+
+                />
+
+            )}
+
         </div>
     );
 }
