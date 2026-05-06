@@ -1,11 +1,21 @@
-function HoldingsItem({holding}) {
+import HoldingsChart from "./HoldingsChart.jsx"
+
+function HoldingsItem({holding, isOpen, onClick}) {
     return (
         <div>
-            <span>{holding.symbol}</span>
-            <span>{holding.current_price}</span>
-            <span>{holding.current_price - holding.price_paid}</span>
-            <span>{holding.quantity}</span>
-            <span>{holding.type}</span>
+            <div onClick={onClick}>
+                <span>{holding.symbol}</span>
+                <span>{holding.current_price}</span>
+                <span>{holding.current_price - holding.price_paid}</span>
+                <span>{holding.quantity}</span>
+                <span>{holding.type}</span>
+            </div>
+
+            {isOpen && (
+                <div>
+                    <HoldingsChart symbol={holding.symbol}/>
+                </div>
+            )}
         </div>
     )
 }

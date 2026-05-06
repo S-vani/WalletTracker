@@ -1,6 +1,7 @@
 import asyncio
 from datetime import datetime, timedelta
 from typing import Optional, Literal
+import yfinance as yf
 
 from fastapi import HTTPException, Depends, APIRouter, Query
 from sqlalchemy import select
@@ -243,4 +244,55 @@ async def portfolio_stats(
     return {
         "value": total_value,
         "curr_timeperiod": profit
+    }
+
+@router.get("/prices/history")
+async def get_price_history(
+    symbol: str,
+    range: Literal["1D", "1W", "1M", "1Y", "5Y"]
+):
+    now = datetime.utcnow()
+
+    if range == "1D":
+        period = "1d"
+        interval = "5m"
+    elif range == "1W":
+        period = "5d"
+        interval = "15m"
+    elif range == "1M":
+        period = "1mo"
+        interval = "1d"
+    elif range == "1Y":
+        period = "1y"
+        interval = "1d"
+    else:
+        period = "5y"
+        interval = "1wk"
+
+    ticker = yf.Ticker(symbol)
+
+    hist = ticker.history(
+        period=period,
+        interval=interval
+    )
+
+    if hist.empty:
+        return {
+            "symbol": symbol,
+            "range": range,
+            "data": []
+        }
+
+    data = []
+
+    for index, row in hist.iterrows():
+        data.append({
+            "time": str(index),
+            "price": float(row["Close"])
+        })
+
+    return {
+        "symbol": symbol,
+        "range": range,
+        "data": data
     }

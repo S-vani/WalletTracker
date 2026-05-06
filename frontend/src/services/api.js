@@ -91,3 +91,15 @@ export async function getHoldings(){
 
     return res.json();
 }
+
+export async function getPriceHistory(symbol, range) {
+    const res = await fetch(
+        `${BASE_URL}/prices/history?symbol=${symbol}&range=${range}`
+    );
+
+    if (!res.ok) {
+        throw new Error("Failed to load chart data");
+    }
+
+    return res.json();
+}
