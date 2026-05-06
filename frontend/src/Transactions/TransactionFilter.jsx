@@ -1,12 +1,12 @@
 import {useState} from "react";
 
-function TransactionFilter({onFiltered}) {
+function TransactionFilter({onFiltered, onClose}) {
     const [form, setForm] = useState({
         symbol: "",
         action: "",
         start_date: "",
         end_date: "",
-    })
+    });
 
     const handleChange = async (e) => {
         setForm({
@@ -19,6 +19,7 @@ function TransactionFilter({onFiltered}) {
     const handleSubmit = async (e) => {
         e.preventDefault()
 
+        onClose();
         onFiltered(form);
     };
 

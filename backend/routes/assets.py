@@ -12,7 +12,8 @@ from backend.db_models.assets import Transaction, User
 from backend.schemas.assets import CreateTransaction, UpdateTransaction
 from backend.services.asset_services import current_quantity, create_holding_filter, \
     turn_list_to_dict, calculate_profit_for_one_transaction, get_curr_holdings_prices, \
-    get_holdings_at_time, get_portfolio_value_at, get_cash_flow_between, get_total_realized_profit
+    get_holdings_at_time, get_portfolio_value_at, get_cash_flow_between, get_total_realized_profit, \
+    get_holdings_at_time_list
 
 router = APIRouter()
 
@@ -174,105 +175,72 @@ async def make_transaction(
     await session.refresh(transaction)
     return transaction
 
-
 @router.get("/holdings")
-async def current_holdings(
-        session: AsyncSession = Depends(get_async_session),
-        current_user: User = Depends(current_active_user)
+async def get_current_holdings(
+    session: AsyncSession = Depends(get_async_session),
+    current_user: User = Depends(current_active_user)
 ):
-    """
-    Return a dictionary that maps the api_id to another dictionary with the quantity, average price and type of transaction.
-    """
-    return await get_holdings_at_time(session, current_user.id, datetime.utcnow())
+    return await get_holdings_at_time_list(session, current_user.id, datetime.utcnow())
 
 
-@router.get("/portfolio")
+@router.get("/dashboard")
 async def portfolio_stats(
-        session: AsyncSession = Depends(get_async_session),
-        current_user: User = Depends(current_active_user)
+    current_timeperiod: Optional[Literal["day", "week", "month", "year"]] = None,
+
+    session: AsyncSession = Depends(get_async_session),
+    current_user: User = Depends(current_active_user)
 ):
-    """
-    Return a dictionary that maps many things including the total value of the portfolio, the daily, weekly, monthly, yearly
-    and all time profits.
-    """
     now = datetime.utcnow()
 
-    # current holdings
     holdings = await get_holdings_at_time(session, current_user.id, now)
 
-    if not holdings:  # If user doesn't have any holdings
-        return {
-            "value": 0.0,
-            "profit": 0.0,
-            "daily": 0.0,
-            "weekly": 0.0,
-            "monthly": 0.0,
-            "yearly": 0.0
-        }
+    if not holdings:
+        return {"value": 0.0, "curr_timeperiod": 0.0}
 
-    curr_prices = await get_curr_holdings_prices(holdings)  # Get the current prices of all our holdings
+    curr_prices = await get_curr_holdings_prices(holdings)
+    print("HOLDINGS:", holdings)
+    print("PRICES:", curr_prices)
 
     total_value = 0.0
     unrealized_profit = 0.0
 
     for api_id, data in holdings.items():
-        price = float(curr_prices.get(api_id, 0.0))  # Default to zero if we didn't fetch the price
-        quantity = float(data["quantity"])
-        avg_price = float(data["avg_price"])
+        price = float(curr_prices.get(api_id, 0.0))
+        qty = float(data["quantity"])
+        avg = float(data["avg_price"])
 
-        position_value = price * quantity  # Current value of that holding
-        cost_basis = avg_price * quantity  # Value that we bought it at
-
+        position_value = price * qty
         total_value += position_value
-        unrealized_profit += (position_value - cost_basis)
+        unrealized_profit += (position_value - avg * qty)
 
-    # ---- TIME WINDOWS ----
-    one_day = now - timedelta(days=1)
-    seven_days = now - timedelta(days=7)
-    thirty_one_days = now - timedelta(days=30)
-    three_sixty_five_days = now - timedelta(days=365)
+    if current_timeperiod is None:
+        realized_profit = await get_total_realized_profit(session, current_user.id)
 
-    # ---- PARALLEL TASKS ----
-    value_tasks = [
-        get_portfolio_value_at(session, current_user.id, one_day),
-        get_portfolio_value_at(session, current_user.id, seven_days),
-        get_portfolio_value_at(session, current_user.id, thirty_one_days),
-        get_portfolio_value_at(session, current_user.id, three_sixty_five_days),
-    ]
+        return {
+            "value": total_value,
+            "curr_timeperiod": unrealized_profit + realized_profit
+        }
 
-    cash_tasks = [
-        get_cash_flow_between(session, current_user.id, one_day, now),
-        get_cash_flow_between(session, current_user.id, seven_days, now),
-        get_cash_flow_between(session, current_user.id, thirty_one_days, now),
-        get_cash_flow_between(session, current_user.id, three_sixty_five_days, now),
-    ]
+    delta_map = {
+        "day": 1,
+        "week": 7,
+        "month": 30,
+        "year": 365
+    }
 
-    realized_task = get_total_realized_profit(session, current_user.id)
+    past_time = now - timedelta(days=delta_map[current_timeperiod])
 
-    results = await asyncio.gather(  # perform all these functions in parallel to save time
-        *value_tasks,
-        *cash_tasks,
-        realized_task
+    value_task = get_portfolio_value_at(session, current_user.id, past_time)
+    cash_task = get_cash_flow_between(session, current_user.id, past_time, now)
+
+    past_value, cash_flow = await asyncio.gather(
+        value_task,
+        cash_task
     )
 
-    # ---- UNPACK RESULTS ----
-    value_1d, value_7d, value_31d, value_365d = results[0:4]
-    cash_1d, cash_7d, cash_31d, cash_365d = results[4:8]
-    realized_profit = results[8]
-
-    # ---- FINAL PROFITS ----
-    daily_profit = (total_value - value_1d) - cash_1d
-    weekly_profit = (total_value - value_7d) - cash_7d
-    monthly_profit = (total_value - value_31d) - cash_31d
-    yearly_profit = (total_value - value_365d) - cash_365d
-
-    total_profit = unrealized_profit + realized_profit
+    profit = (total_value - past_value) - cash_flow
 
     return {
         "value": total_value,
-        "alltime": total_profit,
-        "daily": daily_profit,
-        "weekly": weekly_profit,
-        "monthly": monthly_profit,
-        "yearly": yearly_profit
+        "curr_timeperiod": profit
     }

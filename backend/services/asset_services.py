@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 import httpx
 import yfinance as yf
-from sqlalchemy import select
+from sqlalchemy import select, func, case
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -10,7 +10,7 @@ from backend.db_models.assets import Transaction
 from backend.schemas.assets import CreateTransaction
 
 
-async def get_holdings_from_symbol(db: AsyncSession, user_id:UUID, symbol:str):
+async def get_holdings_from_symbol(db: AsyncSession, user_id: UUID, symbol: str):
     """
     Return a dictionary that maps many things including the total value of the portfolio, the daily, weekly, monthly, yearly
     and all time profits.
@@ -23,6 +23,7 @@ async def get_holdings_from_symbol(db: AsyncSession, user_id:UUID, symbol:str):
     )
 
     return result.scalars().all()
+
 
 async def get_curr_holdings_prices(holdings: dict[str, dict[str, float | str]]):
     crypto = []
@@ -40,55 +41,51 @@ async def get_curr_holdings_prices(holdings: dict[str, dict[str, float | str]]):
 
     return crypto_prices | stock_prices
 
+
 async def get_total_realized_profit(db: AsyncSession, user_id: UUID):
     result = await db.execute(
-        select(Transaction)
+        select(func.coalesce(func.sum(Transaction.profit), 0.0))
         .where(
             Transaction.user_id == user_id,
             Transaction.action == "SELL"
         )
     )
 
-    result = result.scalars().all()
-    total = 0.0
+    return float(result.scalar_one())
 
-    for transaction in result:
-        total += float(transaction.profit)
-
-    return total
 
 async def get_cash_flow_between(
-    db: AsyncSession,
-    user_id: UUID,
-    start: datetime,
-    end: datetime
+        db: AsyncSession,
+        user_id: UUID,
+        start: datetime,
+        end: datetime
 ):
     result = await db.execute(
-        select(Transaction).where(
+        select(
+            func.coalesce(  # if there's no rows with these props return 0.0 instead of null
+                func.sum(
+                    (Transaction.price_of_one * Transaction.quantity) *
+                    case(
+                        (Transaction.action == "BUY", 1),
+                        else_=-1
+                    )
+                ),
+                0.0
+            )
+        ).where(
             Transaction.user_id == user_id,
             Transaction.created_at > start,
             Transaction.created_at <= end
         )
     )
 
-    transactions = result.scalars().all()
+    return float(result.scalar_one())
 
-    cash_flow = 0.0
-
-    for t in transactions:
-        amount = float(t.price_of_one) * float(t.quantity)
-
-        if str(t.action) == "BUY":
-            cash_flow += amount
-        else:  # SELL
-            cash_flow -= amount
-
-    return cash_flow
 
 async def get_portfolio_value_at(
-    db: AsyncSession,
-    user_id: UUID,
-    timestamp: datetime
+        db: AsyncSession,
+        user_id: UUID,
+        timestamp: datetime
 ):
     holdings = await get_holdings_at_time(db, user_id, timestamp)
 
@@ -118,10 +115,11 @@ async def get_portfolio_value_at(
 
     return total_value
 
+
 async def get_holdings_at_time(
-    db: AsyncSession,
-    user_id: UUID,
-    timestamp: datetime
+        db: AsyncSession,
+        user_id: UUID,
+        timestamp: datetime
 ):
     curr_holdings = {}
 
@@ -161,9 +159,26 @@ async def get_holdings_at_time(
 
     return curr_holdings
 
+
+async def get_holdings_at_time_list(
+        db: AsyncSession,
+        user_id: UUID,
+        timestamp: datetime
+):
+    result = await get_holdings_at_time(db, user_id, timestamp)
+    curr_holdings_list = []
+
+    for key, value in result.items():
+        curr_holdings_list.append(
+            {"symbol": key, "avg_price": value["avg_price"], "quantity": value["quantity"], "type": value["type"]})
+
+    return curr_holdings_list
+
+
 def get_holdings_helper(curr_avg: float, new_price: float, curr_quantity: float, new_quantity: float):
     total_cost = (curr_avg * curr_quantity) + (new_price * new_quantity)
     return total_cost / (curr_quantity + new_quantity)
+
 
 async def get_usd_to_cad():
     url = "https://open.er-api.com/v6/latest/USD"
@@ -176,28 +191,37 @@ async def get_usd_to_cad():
 
     return float(cad)
 
+
 async def get_crypto_prices_at(api_ids: list[str], timestamp: datetime):
     if not api_ids:
         return {}
 
     prices = {}
 
-    for api_id in api_ids:
-        url = f"https://api.coingecko.com/api/v3/coins/{api_id}/history"
-        params = {
-            "date": timestamp.strftime("%d-%m-%Y")
-        }
+    ts = int(timestamp.timestamp())
 
-        async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(timeout=10) as client:
+        for api_id in api_ids:
+            url = "https://min-api.cryptocompare.com/data/v2/histoday"
+
+            params = {
+                "fsym": api_id.upper(),
+                "tsym": "CAD",
+                "limit": 1,
+                "toTs": ts
+            }
+
             res = await client.get(url, params=params)
+
             data = res.json()
 
-        try:
-            prices[api_id] = data["market_data"]["current_price"]["cad"]
-        except:
-            prices[api_id] = 0.0
+            # last available daily close
+            close_price = data["Data"]["Data"][0]["close"]
+
+            prices[api_id] = float(close_price)
 
     return prices
+
 
 async def get_stock_prices_at(symbols: list[str], timestamp: datetime):
     if not symbols:
@@ -209,27 +233,24 @@ async def get_stock_prices_at(symbols: list[str], timestamp: datetime):
     prices = {}
 
     for symbol in symbols:
-        try:
-            ticker = tickers.tickers[symbol]
+        ticker = tickers.tickers[symbol]
 
-            hist = ticker.history(
-                start=timestamp.date(),
-                end=timestamp.date() + timedelta(days=1),
-                interval="1d"
-            )
+        hist = ticker.history(
+            start=timestamp.date(),
+            end=timestamp.date() + timedelta(days=1),
+            interval="1d"
+        )
 
-            if not hist.empty:
-                close_price = float(hist["Close"].iloc[0])
-                prices[symbol] = close_price * conversion
-            else:
-                prices[symbol] = 0.0
-
-        except Exception:
+        if not hist.empty:
+            close_price = float(hist["Close"].iloc[0])
+            prices[symbol] = close_price * conversion
+        else:
             prices[symbol] = 0.0
 
     return prices
 
-async def calculate_profit_for_one_transaction(db: AsyncSession, user_id:UUID, data: CreateTransaction):
+
+async def calculate_profit_for_one_transaction(db: AsyncSession, user_id: UUID, data: CreateTransaction):
     result = await db.execute(
         select(Transaction).where(
             Transaction.user_id == user_id,
@@ -270,12 +291,12 @@ async def calculate_profit_for_one_transaction(db: AsyncSession, user_id:UUID, d
 
 
 def create_holding_filter(
-                                user_id: UUID,
-                                symbol: str | None = None,
-                                action: str | None = None,
-                                start_date: datetime | None = None,
-                                end_date: datetime | None = None
-                                ):
+        user_id: UUID,
+        symbol: str | None = None,
+        action: str | None = None,
+        start_date: datetime | None = None,
+        end_date: datetime | None = None
+):
     query = select(Transaction).where(Transaction.user_id == user_id)
 
     if symbol:
@@ -294,7 +315,8 @@ def create_holding_filter(
 
     return query
 
-async def current_quantity(db: AsyncSession, user_id:UUID, symbol:str) -> float:
+
+async def current_quantity(db: AsyncSession, user_id: UUID, symbol: str) -> float:
     lst = await get_holdings_from_symbol(db, user_id, symbol)
     selling = 0
     buying = 0
@@ -305,6 +327,7 @@ async def current_quantity(db: AsyncSession, user_id:UUID, symbol:str) -> float:
             buying += trans.quantity
 
     return buying - selling
+
 
 def turn_list_to_dict(lst):
     transactions_data = []

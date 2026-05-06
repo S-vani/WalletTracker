@@ -53,6 +53,7 @@ function TransactionsPage() {
             {showFilterForm && (
                 <TransactionFilter
                     onFiltered={loadTransactions}
+                    onClose={() => setShowFilterForm(false)}
 
                 />
 

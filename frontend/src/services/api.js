@@ -56,3 +56,38 @@ export async function createTransaction(data) {
 
     return res.json();
 }
+
+export async function getDashboardStats(time_span){
+    const times = new URLSearchParams()
+
+    if (time_span){
+        times.append("current_timeperiod", time_span)
+    }
+
+    const url  = times.toString()
+        ? `${BASE_URL}/dashboard?${times.toString()}`
+        : `${BASE_URL}/dashboard`;
+
+    const res = await fetch(url, {
+        headers: getAuthHeaders(),
+    })
+
+    if (!res.ok) {
+        throw new Error(`Dashboard fetch failed: ${res.status}`);
+    }
+
+    return res.json();
+}
+
+export async function getHoldings(){
+
+    const res = await fetch(`${BASE_URL}/holdings?}`, {
+        headers: getAuthHeaders(),
+    });
+
+    if (!res.ok) {
+        throw new Error(`Holdings fetch failed: ${res.status}`);
+    }
+
+    return res.json();
+}
