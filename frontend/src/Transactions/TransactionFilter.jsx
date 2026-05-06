@@ -1,6 +1,6 @@
 import {useState} from "react";
 
-function TransactionFilter({onFiltered}){
+function TransactionFilter({onFiltered}) {
     const [form, setForm] = useState({
         symbol: "",
         action: "",
@@ -8,7 +8,7 @@ function TransactionFilter({onFiltered}){
         end_date: "",
     })
 
-    const handleChange = async (e) =>{
+    const handleChange = async (e) => {
         setForm({
             ...form,
             [e.target.name]: e.target.value
@@ -22,7 +22,7 @@ function TransactionFilter({onFiltered}){
         onFiltered(form);
     };
 
-    return(
+    return (
         <div>
             <h2>Filter</h2>
 

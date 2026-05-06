@@ -50,7 +50,7 @@ function TransactionsPage() {
                 Filter
             </button>
 
-            {showFilterForm &&(
+            {showFilterForm && (
                 <TransactionFilter
                     onFiltered={loadTransactions}
 

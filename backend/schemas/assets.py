@@ -3,14 +3,18 @@ from fastapi_users import schemas
 import uuid
 from typing import Literal, Optional
 
+
 class UserRead(schemas.BaseUser[uuid.UUID]):
     name: str
+
 
 class UserCreate(schemas.BaseUserCreate):
     name: str
 
+
 class UserUpdate(schemas.BaseUserUpdate):
     pass
+
 
 class CreateTransaction(BaseModel):
     symbol: str
@@ -19,6 +23,7 @@ class CreateTransaction(BaseModel):
     price_of_one: float
     quantity: float
     api_id: str
+
 
 class UpdateTransaction(BaseModel):
     symbol: Optional[str]
