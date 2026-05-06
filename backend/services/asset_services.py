@@ -166,11 +166,33 @@ async def get_holdings_at_time_list(
         timestamp: datetime
 ):
     result = await get_holdings_at_time(db, user_id, timestamp)
+    now = datetime.utcnow()
+
+    stocks = []
+    crypto = []
+
+    for key, value in result.items():
+        if value["type"] == "stock":
+            stocks.append(key)
+        else:
+            crypto.append(key)
+
+    stock_prices = await get_stock_prices_at(stocks, now)
+    crypto_prices = await get_crypto_prices_at(crypto, now)
+
     curr_holdings_list = []
 
     for key, value in result.items():
-        curr_holdings_list.append(
-            {"symbol": key, "avg_price": value["avg_price"], "quantity": value["quantity"], "type": value["type"]})
+        prices = stock_prices if value["type"] == "stock" else crypto_prices
+        current_price = float(prices[key])
+
+        curr_holdings_list.append({
+            "symbol": key,
+            "price_paid": float(value["avg_price"]) * float(value["quantity"]),
+            "quantity": float(value["quantity"]),
+            "type": value["type"],
+            "current_price": current_price * float(value["quantity"])
+        })
 
     return curr_holdings_list
 
