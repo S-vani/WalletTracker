@@ -13,7 +13,7 @@ function HoldingsItem({holding, isOpen, onClick}) {
 
             {isOpen && (
                 <div>
-                    <HoldingsChart symbol={holding.symbol}/>
+                    <HoldingsChart symbol={holding.symbol} type={holding.type}/>
                 </div>
             )}
         </div>

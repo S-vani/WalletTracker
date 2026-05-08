@@ -1,5 +1,5 @@
 import asyncio
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional, Literal
 import yfinance as yf
 
@@ -193,7 +193,7 @@ async def get_current_holdings(
 
     this is a dictionary with all the current holdings that the user has
     """
-    return await get_holdings_at_time_list(session, current_user.id, datetime.utcnow())
+    return await get_holdings_at_time_list(session, current_user.id, datetime.now(timezone.utc))
 
 
 @router.get("/dashboard")
@@ -207,7 +207,7 @@ async def portfolio_stats(
     Return a simple dictionary with 2 key value pairs, total portfolio value and the profit in the time period sent in,
     either daily, weekly, monthly, yearly or all time profit.
     """
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc)
 
     holdings = await get_holdings_at_time(session, current_user.id, now) # returns dict which maps api_id to avg_price, quantity and type
 
@@ -262,7 +262,8 @@ async def portfolio_stats(
 
 @router.get("/prices/history")
 async def get_price_history(
-    api_id: str,
+    symbol: str,
+    type: str,
     range: Literal["1D", "1W", "1M", "1Y", "5Y"]
 ):
     """
@@ -270,7 +271,12 @@ async def get_price_history(
     I want to see how much BTC has changed in price over the past day, I call get_price_history("BTC", "1D") and it
     returns all the data needed to generate a graph of its price
     """
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc)
+
+    if type == "crypto":
+        s = str(symbol) + "-CAD"
+    else:
+        s = str(symbol)
 
     # Translate it into a form that yahoo finance can understand
     if range == "1D":
@@ -289,7 +295,7 @@ async def get_price_history(
         period = "5y"
         interval = "1wk"
 
-    ticker = yf.Ticker(api_id) # create object representing the specific stock or crypto
+    ticker = yf.Ticker(s) # create object representing the specific stock or crypto
 
     hist = ticker.history(
         period=period,
@@ -298,7 +304,7 @@ async def get_price_history(
 
     if hist.empty:
         return {
-            "symbol": api_id,
+            "symbol": s,
             "range": range,
             "data": []
         }
@@ -312,7 +318,7 @@ async def get_price_history(
         })
 
     return {
-        "symbol": api_id,
+        "symbol": s,
         "range": range,
         "data": data
     }

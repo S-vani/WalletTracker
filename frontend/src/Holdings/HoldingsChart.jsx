@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import {getPriceHistory} from "../services/api.js";
 import {LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer} from "recharts";
 
-function HoldingChart({symbol}) {
+function HoldingChart({symbol, type}) {
     const [range, setRange] = useState("1M");
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -11,7 +11,7 @@ function HoldingChart({symbol}) {
         const load = async () => {
             setLoading(true);
 
-            const res = await getPriceHistory(symbol, range);
+            const res = await getPriceHistory(symbol, type, range);
 
             // transform backend → recharts format
             const formatted = res.data.map(p => ({

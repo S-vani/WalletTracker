@@ -38,10 +38,9 @@ export async function getTransactions(filters = {}) {
 }
 
 export async function createTransaction(data) {
-
     data = {
         ...data,
-        api_id: "bitcoin"
+        api_id: String(data.symbol)
     }
 
     const res = await fetch(`${BASE_URL}/transactions`, {
@@ -92,10 +91,11 @@ export async function getHoldings(){
     return res.json();
 }
 
-export async function getPriceHistory(symbol, range) {
+export async function getPriceHistory(symbol, type, range) {
     const res = await fetch(
-        `${BASE_URL}/prices/history?symbol=${symbol}&range=${range}`
+        `${BASE_URL}/prices/history?symbol=${symbol}&type=${type}&range=${range}`
     );
+    console.log(symbol)
 
     if (!res.ok) {
         throw new Error("Failed to load chart data");

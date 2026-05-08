@@ -1,10 +1,11 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import httpx
 import yfinance as yf
 from sqlalchemy import select, func, case
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
+import numpy as np
 
 from backend.db_models.assets import Transaction
 from backend.schemas.assets import CreateTransaction
@@ -12,8 +13,7 @@ from backend.schemas.assets import CreateTransaction
 
 async def get_holdings_from_symbol(db: AsyncSession, user_id: UUID, symbol: str):
     """
-    Return a dictionary that maps many things including the total value of the portfolio, the daily, weekly, monthly, yearly
-    and all time profits.
+    Return a list of Transactions objects of that specific symbol
     """
     result = await db.execute(
         select(Transaction).where(
@@ -26,6 +26,9 @@ async def get_holdings_from_symbol(db: AsyncSession, user_id: UUID, symbol: str)
 
 
 async def get_curr_holdings_prices(holdings: dict[str, dict[str, float | str]]):
+    """
+    Return a list of dictionaries in the form {"api:id": curr_price}
+    """
     crypto = []
     stocks = []
 
@@ -36,13 +39,16 @@ async def get_curr_holdings_prices(holdings: dict[str, dict[str, float | str]]):
             stocks.append(str(ids))
 
     # The 2 variables below are dicts like {api_id: curr_price}
-    crypto_prices = await get_crypto_prices_at(crypto, datetime.utcnow())
-    stock_prices = await get_stock_prices_at(stocks, datetime.utcnow())
+    crypto_prices = await get_crypto_prices_at(crypto, datetime.now(timezone.utc))
+    stock_prices = await get_stock_prices_at(stocks, datetime.now(timezone.utc))
 
     return crypto_prices | stock_prices
 
 
 async def get_total_realized_profit(db: AsyncSession, user_id: UUID):
+    """
+    Query the database with all the sell transactions and add up all the profit parameters in those sell transactions
+    """
     result = await db.execute(
         select(func.coalesce(func.sum(Transaction.profit), 0.0))
         .where(
@@ -60,12 +66,17 @@ async def get_cash_flow_between(
         start: datetime,
         end: datetime
 ):
+    """
+    Meant to calculate cash flow into the account, to be more specific imagine with 1 week ago someone portfolio value is 1000$,
+    and now its 2000$, but they did not actually profit 1000$ but rather profited 100$ and then deposited another 900$, this function is
+    meant to calculate that 900$ cash flow into the account so it's not accounted for in the profit
+    """
     result = await db.execute(
         select(
             func.coalesce(  # if there's no rows with these props return 0.0 instead of null
                 func.sum(
                     (Transaction.price_of_one * Transaction.quantity) *
-                    case(
+                    case( # if the transaction is buy then we multiply the transactions value by 1, if its sell multiply by -1 then sum it together
                         (Transaction.action == "BUY", 1),
                         else_=-1
                     )
@@ -79,7 +90,7 @@ async def get_cash_flow_between(
         )
     )
 
-    return float(result.scalar_one())
+    return float(result.scalar_one()) # return 1 scalar float value
 
 
 async def get_portfolio_value_at(
@@ -87,6 +98,9 @@ async def get_portfolio_value_at(
         user_id: UUID,
         timestamp: datetime
 ):
+    """
+    Get the portfolios value at a specific time in the form of a float
+    """
     holdings = await get_holdings_at_time(db, user_id, timestamp)
 
     if not holdings:
@@ -121,7 +135,11 @@ async def get_holdings_at_time(
         user_id: UUID,
         timestamp: datetime
 ):
-    curr_holdings = {}
+    """
+    Return a dictionary mapping an api id to another dictionary with average price, quantity  and type meant to be a dictionary
+    of all the holdings at a certain time
+    """
+    holdings_at_timestamp = {}
 
     result = await db.execute(
         select(Transaction)
@@ -132,32 +150,32 @@ async def get_holdings_at_time(
         .order_by(Transaction.created_at.asc())
     )
 
-    transactions = result.scalars().all()
+    transactions = result.scalars().all() # all transactions from timestamp and before
 
     for t in transactions:
         api_id = str(t.api_id)
 
         if str(t.action) == "BUY":
-            if api_id in curr_holdings:
-                curr_holdings[api_id]["avg_price"] = get_holdings_helper(
-                    curr_holdings[api_id]["avg_price"],
+            if api_id in holdings_at_timestamp: # if the api_id is already in the dictionary recalculate its values
+                holdings_at_timestamp[api_id]["avg_price"] = get_holdings_helper(
+                    holdings_at_timestamp[api_id]["avg_price"],
                     t.price_of_one,
-                    curr_holdings[api_id]["quantity"],
+                    holdings_at_timestamp[api_id]["quantity"],
                     t.quantity
                 )
-                curr_holdings[api_id]["quantity"] += t.quantity
+                holdings_at_timestamp[api_id]["quantity"] += t.quantity
             else:
-                curr_holdings[api_id] = {
+                holdings_at_timestamp[api_id] = {
                     "avg_price": t.price_of_one,
                     "quantity": t.quantity,
                     "type": t.asset_type
                 }
 
         else:  # SELL
-            if api_id in curr_holdings:
-                curr_holdings[api_id]["quantity"] -= t.quantity
+            if api_id in holdings_at_timestamp:
+                holdings_at_timestamp[api_id]["quantity"] -= t.quantity
 
-    return curr_holdings
+    return holdings_at_timestamp
 
 
 async def get_holdings_at_time_list(
@@ -165,8 +183,11 @@ async def get_holdings_at_time_list(
         user_id: UUID,
         timestamp: datetime
 ):
+    """
+    Take the dictionary that get_holdings_at_time returns and turn it into a list to be more easily used by the frontend
+    """
     result = await get_holdings_at_time(db, user_id, timestamp)
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc)
 
     stocks = []
     crypto = []
@@ -198,11 +219,17 @@ async def get_holdings_at_time_list(
 
 
 def get_holdings_helper(curr_avg: float, new_price: float, curr_quantity: float, new_quantity: float):
+    """
+    Calculate the average price paid for a certain holding
+    """
     total_cost = (curr_avg * curr_quantity) + (new_price * new_quantity)
     return total_cost / (curr_quantity + new_quantity)
 
 
 async def get_usd_to_cad():
+    """
+    use an api to get the current usd to cad value since the entire app will be only in cad
+    """
     url = "https://open.er-api.com/v6/latest/USD"
 
     async with httpx.AsyncClient() as client:
@@ -215,64 +242,85 @@ async def get_usd_to_cad():
 
 
 async def get_crypto_prices_at(api_ids: list[str], timestamp: datetime):
+    """
+    Get crypto prices for api_ids at a specific time using Yahoo Finance.
+    """
     if not api_ids:
         return {}
 
-    prices = {}
+    prices = {} # maps an api_id to its price at timestamp
 
-    ts = int(timestamp.timestamp())
+    # Get a small window around the timestamp for an accurate measure
+    start = timestamp - timedelta(minutes=5)
+    end = timestamp + timedelta(minutes=5)
 
-    async with httpx.AsyncClient(timeout=10) as client:
-        for api_id in api_ids:
-            url = "https://min-api.cryptocompare.com/data/v2/histoday"
+    for api_id in api_ids:
+        # Convert crypto symbol to Yahoo format will modify the api_ids later to not manually do this
+        ticker_symbol = f"{api_id.upper()}-CAD"
 
-            params = {
-                "fsym": api_id.upper(),
-                "tsym": "CAD",
-                "limit": 1,
-                "toTs": ts
-            }
+        ticker = yf.Ticker(ticker_symbol)
 
-            res = await client.get(url, params=params)
+        # fetch minute-level data around the timestamp
+        hist = ticker.history(
+            start=start,
+            end=end,
+            interval="1m"
+        )
 
-            data = res.json()
+        if hist.empty:
+            prices[api_id] = None
+            continue
 
-            # last available daily close
-            close_price = data["Data"]["Data"][0]["close"]
+        # find the candle closest to the requested timestamp
+        closest_row = hist.iloc[np.abs(hist.index - timestamp).argmin()]
 
-            prices[api_id] = float(close_price)
+        close_price = closest_row["Close"]
+
+        prices[api_id] = float(close_price)
 
     return prices
 
 
 async def get_stock_prices_at(symbols: list[str], timestamp: datetime):
+    """
+    Get stock prices for api_ids at a specific time using Yahoo Finance.
+    """
     if not symbols:
         return {}
 
-    tickers = yf.Tickers(" ".join(symbols))
-    conversion = await get_usd_to_cad()
-
     prices = {}
 
+    start = timestamp - timedelta(minutes=5)
+    end = timestamp + timedelta(minutes=5)
+
+    conversion = await get_usd_to_cad()
+
     for symbol in symbols:
-        ticker = tickers.tickers[symbol]
+        ticker = yf.Ticker(symbol)
 
         hist = ticker.history(
-            start=timestamp.date(),
-            end=timestamp.date() + timedelta(days=1),
-            interval="1d"
+            start=start,
+            end=end,
+            interval="1m"
         )
 
-        if not hist.empty:
-            close_price = float(hist["Close"].iloc[0])
-            prices[symbol] = close_price * conversion
-        else:
-            prices[symbol] = 0.0
+        if hist.empty:
+            prices[symbol] = None
+            continue
+
+        closest_row = hist.iloc[np.abs(hist.index - timestamp).argmin()]
+
+        price = float(closest_row["Close"])
+
+        prices[symbol] = price * conversion
 
     return prices
 
 
 async def calculate_profit_for_one_transaction(db: AsyncSession, user_id: UUID, data: CreateTransaction):
+    """
+    Calculate the amount a user profited from a certain sell transaction
+    """
     result = await db.execute(
         select(Transaction).where(
             Transaction.user_id == user_id,
@@ -293,7 +341,7 @@ async def calculate_profit_for_one_transaction(db: AsyncSession, user_id: UUID, 
 
             new_qty = quantity + qty
 
-            avg_cost = (
+            avg_cost = ( # recalculate the average price paid for that symbol
                 (quantity * avg_cost + qty * price) / new_qty
                 if new_qty > 0 else 0.0
             )
@@ -319,6 +367,9 @@ def create_holding_filter(
         start_date: datetime | None = None,
         end_date: datetime | None = None
 ):
+    """
+    create a query for the backend to use to query the database
+    """
     query = select(Transaction).where(Transaction.user_id == user_id)
 
     if symbol:
@@ -333,12 +384,15 @@ def create_holding_filter(
     if end_date:  # Will always be true
         query = query.where(Transaction.created_at <= end_date)
     else:
-        query = query.where(Transaction.created_at <= datetime.utcnow())
+        query = query.where(Transaction.created_at <= datetime.now(timezone.utc))
 
     return query
 
 
 async def current_quantity(db: AsyncSession, user_id: UUID, symbol: str) -> float:
+    """
+    Calculate how much of a specific symbol a user has, for example how much BTC is currently in their account
+    """
     lst = await get_holdings_from_symbol(db, user_id, symbol)
     selling = 0
     buying = 0
@@ -352,6 +406,9 @@ async def current_quantity(db: AsyncSession, user_id: UUID, symbol: str) -> floa
 
 
 def turn_list_to_dict(lst):
+    """
+    loop through a list of transactions and turn it into a list of dictionaries that are easier to use
+    """
     transactions_data = []
     for trans in lst:
         transactions_data.append(

@@ -1,6 +1,6 @@
 import os
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 
 from dotenv import load_dotenv
 from fastapi_users import BaseUserManager, UUIDIDMixin, models
@@ -42,6 +42,6 @@ class Transaction(Base):
     api_id = Column(String, nullable=False)
     price_of_one = Column(Numeric(20, 10), nullable=False)
     quantity = Column(Numeric(20, 10), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.now(timezone.utc))
 
     user = relationship("User", back_populates="transactions")
