@@ -181,6 +181,18 @@ async def get_current_holdings(
     session: AsyncSession = Depends(get_async_session),
     current_user: User = Depends(current_active_user)
 ):
+    """
+    Return a list of dictionaries in the form:
+    {
+    "symbol": str,
+    "price_paid": float(avg_price * quantity),
+    "quantity": float(quantity),
+    "type": str,
+    "current_price": float(current_price_of_holding * quantity)
+    }
+
+    this is a dictionary with all the current holdings that the user has
+    """
     return await get_holdings_at_time_list(session, current_user.id, datetime.utcnow())
 
 
@@ -191,53 +203,55 @@ async def portfolio_stats(
     session: AsyncSession = Depends(get_async_session),
     current_user: User = Depends(current_active_user)
 ):
+    """
+    Return a simple dictionary with 2 key value pairs, total portfolio value and the profit in the time period sent in,
+    either daily, weekly, monthly, yearly or all time profit.
+    """
     now = datetime.utcnow()
 
-    holdings = await get_holdings_at_time(session, current_user.id, now)
+    holdings = await get_holdings_at_time(session, current_user.id, now) # returns dict which maps api_id to avg_price, quantity and type
 
-    if not holdings:
+    if holdings == {}: # If we have no holdings
         return {"value": 0.0, "curr_timeperiod": 0.0}
 
-    curr_prices = await get_curr_holdings_prices(holdings)
-    print("HOLDINGS:", holdings)
-    print("PRICES:", curr_prices)
+    curr_prices = await get_curr_holdings_prices(holdings) # return dictionary mapping api_id to the current price of that holding
 
     total_value = 0.0
     unrealized_profit = 0.0
 
     for api_id, data in holdings.items():
-        price = float(curr_prices.get(api_id, 0.0))
+        price = float(curr_prices[api_id])
         qty = float(data["quantity"])
         avg = float(data["avg_price"])
 
-        position_value = price * qty
+        position_value = price * qty # Basically how much value of that holding the user owns
         total_value += position_value
-        unrealized_profit += (position_value - avg * qty)
+        unrealized_profit += (position_value - (avg * qty)) # Price right now minus the price paid
 
-    if current_timeperiod is None:
-        realized_profit = await get_total_realized_profit(session, current_user.id)
+    if current_timeperiod is None: # If the timeperiod is all time profit
+        realized_profit = await get_total_realized_profit(session, current_user.id) # This function goes through all the users sell transactions and adds up the profit variable
 
         return {
             "value": total_value,
             "curr_timeperiod": unrealized_profit + realized_profit
         }
 
-    delta_map = {
+    time_map = {
         "day": 1,
         "week": 7,
         "month": 30,
         "year": 365
     }
 
-    past_time = now - timedelta(days=delta_map[current_timeperiod])
+    past_time = now - timedelta(days=time_map[current_timeperiod]) # start date that where calculating profit from up to now
 
-    value_task = get_portfolio_value_at(session, current_user.id, past_time)
-    cash_task = get_cash_flow_between(session, current_user.id, past_time, now)
+    value_task = get_portfolio_value_at(session, current_user.id, past_time) # portfolio value at that pastime
+    cash_task = get_cash_flow_between(session, current_user.id, past_time, now) # how much cash has flowed in from then to now (user buys new holdings)
 
     past_value, cash_flow = await asyncio.gather(
         value_task,
         cash_task
-    )
+    ) # asynchronously run both tasks together for efficiency and unpack the result
 
     profit = (total_value - past_value) - cash_flow
 
@@ -248,11 +262,17 @@ async def portfolio_stats(
 
 @router.get("/prices/history")
 async def get_price_history(
-    symbol: str,
+    api_id: str,
     range: Literal["1D", "1W", "1M", "1Y", "5Y"]
 ):
+    """
+    Get historical prices of that specific symbol/holding on specific ranges, to make a graph. For example lets say
+    I want to see how much BTC has changed in price over the past day, I call get_price_history("BTC", "1D") and it
+    returns all the data needed to generate a graph of its price
+    """
     now = datetime.utcnow()
 
+    # Translate it into a form that yahoo finance can understand
     if range == "1D":
         period = "1d"
         interval = "5m"
@@ -269,30 +289,30 @@ async def get_price_history(
         period = "5y"
         interval = "1wk"
 
-    ticker = yf.Ticker(symbol)
+    ticker = yf.Ticker(api_id) # create object representing the specific stock or crypto
 
     hist = ticker.history(
         period=period,
         interval=interval
-    )
+    ) # fetch its historical prices as a dataframe(SQL) table over a time period with specific intervals
 
     if hist.empty:
         return {
-            "symbol": symbol,
+            "symbol": api_id,
             "range": range,
             "data": []
         }
 
-    data = []
+    data = [] # A list with each entry being a dictionary in the form {"time": str, "price": float}
 
-    for index, row in hist.iterrows():
+    for index, row in hist.iterrows(): # iterate row by row with index being the specific row label (date)
         data.append({
             "time": str(index),
-            "price": float(row["Close"])
+            "price": float(row["Close"]) # "Closing" price on that interval, for example if time is 10:15:00, then it fetches price at 10:15:59
         })
 
     return {
-        "symbol": symbol,
+        "symbol": api_id,
         "range": range,
         "data": data
     }
