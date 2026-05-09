@@ -95,11 +95,26 @@ export async function getPriceHistory(symbol, type, range) {
     const res = await fetch(
         `${BASE_URL}/prices/history?symbol=${symbol}&type=${type}&range=${range}`
     );
-    console.log(symbol)
 
     if (!res.ok) {
         throw new Error("Failed to load chart data");
     }
 
     return res.json();
+}
+
+export async function getPortfolioHistory(range){
+    console.log(range)
+    console.log(typeof(range))
+    const res = await fetch(
+        `${BASE_URL}/portfolio/history?range=${range}`, {
+            headers: getAuthHeaders()
+        }
+    );
+
+    if (!res.ok){
+        throw new Error("Failed to load portfolio chart")
+    }
+
+    return res.json()
 }

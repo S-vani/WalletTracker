@@ -14,7 +14,7 @@ from backend.schemas.assets import CreateTransaction, UpdateTransaction
 from backend.services.asset_services import current_quantity, create_holding_filter, \
     turn_list_to_dict, calculate_profit_for_one_transaction, get_curr_holdings_prices, \
     get_holdings_at_time, get_portfolio_value_at, get_cash_flow_between, get_total_realized_profit, \
-    get_holdings_at_time_list
+    get_holdings_at_time_list, get_history_of_prices, get_portfolio_value_history
 
 router = APIRouter()
 
@@ -215,6 +215,7 @@ async def portfolio_stats(
         return {"value": 0.0, "curr_timeperiod": 0.0}
 
     curr_prices = await get_curr_holdings_prices(holdings) # return dictionary mapping api_id to the current price of that holding
+    print(curr_prices)
 
     total_value = 0.0
     unrealized_profit = 0.0
@@ -271,54 +272,23 @@ async def get_price_history(
     I want to see how much BTC has changed in price over the past day, I call get_price_history("BTC", "1D") and it
     returns all the data needed to generate a graph of its price
     """
-    now = datetime.now(timezone.utc)
-
-    if type == "crypto":
-        s = str(symbol) + "-CAD"
-    else:
-        s = str(symbol)
-
-    # Translate it into a form that yahoo finance can understand
-    if range == "1D":
-        period = "1d"
-        interval = "5m"
-    elif range == "1W":
-        period = "5d"
-        interval = "15m"
-    elif range == "1M":
-        period = "1mo"
-        interval = "1d"
-    elif range == "1Y":
-        period = "1y"
-        interval = "1d"
-    else:
-        period = "5y"
-        interval = "1wk"
-
-    ticker = yf.Ticker(s) # create object representing the specific stock or crypto
-
-    hist = ticker.history(
-        period=period,
-        interval=interval
-    ) # fetch its historical prices as a dataframe(SQL) table over a time period with specific intervals
-
-    if hist.empty:
-        return {
-            "symbol": s,
-            "range": range,
-            "data": []
-        }
-
-    data = [] # A list with each entry being a dictionary in the form {"time": str, "price": float}
-
-    for index, row in hist.iterrows(): # iterate row by row with index being the specific row label (date)
-        data.append({
-            "time": str(index),
-            "price": float(row["Close"]) # "Closing" price on that interval, for example if time is 10:15:00, then it fetches price at 10:15:59
-        })
+    data, s = await get_history_of_prices(symbol, type, range)
 
     return {
         "symbol": s,
         "range": range,
         "data": data
     }
+
+@router.get("/portfolio/history")
+async def get_portfolio_history(
+    range: int,
+
+    session: AsyncSession = Depends(get_async_session),
+    current_user: User = Depends(current_active_user)
+):
+
+    print(range, type(range))
+    data = await get_portfolio_value_history(session, current_user.id, range)
+
+    return data
