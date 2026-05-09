@@ -37,7 +37,7 @@ function DashboardChart() {
                         <XAxis dataKey="time"/>
                         <YAxis/>
                         <Tooltip/>
-                        <Line type="monotone" dataKey="value" />
+                        <Line type="monotone" dataKey="value"/>
                     </LineChart>
                 </ResponsiveContainer>
             )}

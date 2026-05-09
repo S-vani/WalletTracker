@@ -176,10 +176,11 @@ async def make_transaction(
     await session.refresh(transaction)
     return transaction
 
+
 @router.get("/holdings")
 async def get_current_holdings(
-    session: AsyncSession = Depends(get_async_session),
-    current_user: User = Depends(current_active_user)
+        session: AsyncSession = Depends(get_async_session),
+        current_user: User = Depends(current_active_user)
 ):
     """
     Return a list of dictionaries in the form:
@@ -198,10 +199,10 @@ async def get_current_holdings(
 
 @router.get("/dashboard")
 async def portfolio_stats(
-    current_timeperiod: Optional[Literal["day", "week", "month", "year"]] = None,
+        current_timeperiod: Optional[Literal["day", "week", "month", "year"]] = None,
 
-    session: AsyncSession = Depends(get_async_session),
-    current_user: User = Depends(current_active_user)
+        session: AsyncSession = Depends(get_async_session),
+        current_user: User = Depends(current_active_user)
 ):
     """
     Return a simple dictionary with 2 key value pairs, total portfolio value and the profit in the time period sent in,
@@ -209,12 +210,14 @@ async def portfolio_stats(
     """
     now = datetime.now(timezone.utc)
 
-    holdings = await get_holdings_at_time(session, current_user.id, now) # returns dict which maps api_id to avg_price, quantity and type
+    holdings = await get_holdings_at_time(session, current_user.id,
+                                          now)  # returns dict which maps api_id to avg_price, quantity and type
 
-    if holdings == {}: # If we have no holdings
+    if holdings == {}:  # If we have no holdings
         return {"value": 0.0, "curr_timeperiod": 0.0}
 
-    curr_prices = await get_curr_holdings_prices(holdings) # return dictionary mapping api_id to the current price of that holding
+    curr_prices = await get_curr_holdings_prices(
+        holdings)  # return dictionary mapping api_id to the current price of that holding
     print(curr_prices)
 
     total_value = 0.0
@@ -225,12 +228,13 @@ async def portfolio_stats(
         qty = float(data["quantity"])
         avg = float(data["avg_price"])
 
-        position_value = price * qty # Basically how much value of that holding the user owns
+        position_value = price * qty  # Basically how much value of that holding the user owns
         total_value += position_value
-        unrealized_profit += (position_value - (avg * qty)) # Price right now minus the price paid
+        unrealized_profit += (position_value - (avg * qty))  # Price right now minus the price paid
 
-    if current_timeperiod is None: # If the timeperiod is all time profit
-        realized_profit = await get_total_realized_profit(session, current_user.id) # This function goes through all the users sell transactions and adds up the profit variable
+    if current_timeperiod is None:  # If the timeperiod is all time profit
+        realized_profit = await get_total_realized_profit(session,
+                                                          current_user.id)  # This function goes through all the users sell transactions and adds up the profit variable
 
         return {
             "value": total_value,
@@ -244,15 +248,17 @@ async def portfolio_stats(
         "year": 365
     }
 
-    past_time = now - timedelta(days=time_map[current_timeperiod]) # start date that where calculating profit from up to now
+    past_time = now - timedelta(
+        days=time_map[current_timeperiod])  # start date that where calculating profit from up to now
 
-    value_task = get_portfolio_value_at(session, current_user.id, past_time) # portfolio value at that pastime
-    cash_task = get_cash_flow_between(session, current_user.id, past_time, now) # how much cash has flowed in from then to now (user buys new holdings)
+    value_task = get_portfolio_value_at(session, current_user.id, past_time)  # portfolio value at that pastime
+    cash_task = get_cash_flow_between(session, current_user.id, past_time,
+                                      now)  # how much cash has flowed in from then to now (user buys new holdings)
 
     past_value, cash_flow = await asyncio.gather(
         value_task,
         cash_task
-    ) # asynchronously run both tasks together for efficiency and unpack the result
+    )  # asynchronously run both tasks together for efficiency and unpack the result
 
     profit = (total_value - past_value) - cash_flow
 
@@ -261,11 +267,12 @@ async def portfolio_stats(
         "curr_timeperiod": profit
     }
 
+
 @router.get("/prices/history")
 async def get_price_history(
-    symbol: str,
-    type: str,
-    range: Literal["1D", "1W", "1M", "1Y", "5Y"]
+        symbol: str,
+        type: str,
+        range: Literal["1D", "1W", "1M", "1Y", "5Y"]
 ):
     """
     Get historical prices of that specific symbol/holding on specific ranges, to make a graph. For example lets say
@@ -280,15 +287,18 @@ async def get_price_history(
         "data": data
     }
 
+
 @router.get("/portfolio/history")
 async def get_portfolio_history(
-    range: int,
+        range: Literal[1, 7, 31, 365],
 
-    session: AsyncSession = Depends(get_async_session),
-    current_user: User = Depends(current_active_user)
+        session: AsyncSession = Depends(get_async_session),
+        current_user: User = Depends(current_active_user)
 ):
-
-    print(range, type(range))
+    """
+    return a list of dictionaries which each have a time mapping to a string of time and also a value mapping to a float,
+    to create a chart for frontend
+    """
     data = await get_portfolio_value_history(session, current_user.id, range)
 
     return data

@@ -3,7 +3,7 @@ import {getHoldings} from "../services/api.js";
 import HoldingsList from "../Holdings/HoldingsList.jsx";
 
 
-function HoldingsPage(){
+function HoldingsPage() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [holdings, setHoldings] = useState([]);

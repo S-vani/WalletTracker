@@ -56,14 +56,14 @@ export async function createTransaction(data) {
     return res.json();
 }
 
-export async function getDashboardStats(time_span){
+export async function getDashboardStats(time_span) {
     const times = new URLSearchParams()
 
-    if (time_span){
+    if (time_span) {
         times.append("current_timeperiod", time_span)
     }
 
-    const url  = times.toString()
+    const url = times.toString()
         ? `${BASE_URL}/dashboard?${times.toString()}`
         : `${BASE_URL}/dashboard`;
 
@@ -78,7 +78,7 @@ export async function getDashboardStats(time_span){
     return res.json();
 }
 
-export async function getHoldings(){
+export async function getHoldings() {
 
     const res = await fetch(`${BASE_URL}/holdings?}`, {
         headers: getAuthHeaders(),
@@ -103,16 +103,14 @@ export async function getPriceHistory(symbol, type, range) {
     return res.json();
 }
 
-export async function getPortfolioHistory(range){
-    console.log(range)
-    console.log(typeof(range))
+export async function getPortfolioHistory(range) {
     const res = await fetch(
         `${BASE_URL}/portfolio/history?range=${range}`, {
             headers: getAuthHeaders()
         }
     );
 
-    if (!res.ok){
+    if (!res.ok) {
         throw new Error("Failed to load portfolio chart")
     }
 

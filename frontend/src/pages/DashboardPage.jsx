@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {getDashboardStats, getTransactions} from "../services/api.js";
 import DashboardStats from "../Dashboard/DashboardStats.jsx";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import DashboardChart from "../Dashboard/DashboardChart.jsx";
 
 
