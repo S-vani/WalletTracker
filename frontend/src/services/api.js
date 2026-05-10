@@ -116,3 +116,70 @@ export async function getPortfolioHistory(range) {
 
     return res.json()
 }
+
+export async function loginAuthentication(form){
+    const formData = new URLSearchParams();
+
+    formData.append("username", form["username"]);
+    formData.append("password", form["password"]);
+
+    const res = await fetch(
+        `${BASE_URL}/auth/jwt/login`,{
+            method:"POST",
+            headers:{"Content-Type": "application/x-www-form-urlencoded"},
+            body: formData
+        }
+    )
+
+    if (!res.ok){
+        throw new Error("Invalid username or password")
+    }
+
+    const data = await res.json()
+
+    localStorage.setItem("token", data.access_token)
+
+    return data
+}
+
+export async function signupAuthentication(form){
+    console.log(form)
+
+    const res = await fetch(
+        `${BASE_URL}/auth/register`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                email: form.email,
+                password: form.password,
+                name: form.name,
+            })
+        }
+    )
+
+    if (!res.ok){
+        throw new Error("Signup Error")
+    }
+
+    return res.json()
+}
+
+export async function verify(params) {
+    const token = params.get("token");
+
+    const res = await fetch(
+        "http://localhost:8000/auth/verify",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                token: token,
+            }),
+        }
+    );
+
+    const data = await res.json();
+
+}

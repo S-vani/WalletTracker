@@ -290,7 +290,7 @@ async def get_price_history(
 
 @router.get("/portfolio/history")
 async def get_portfolio_history(
-        range: Literal[1, 7, 31, 365],
+        range: int,
 
         session: AsyncSession = Depends(get_async_session),
         current_user: User = Depends(current_active_user)

@@ -9,6 +9,7 @@ function DashboardChart() {
 
     const loadDashboardChart = async (selectedRange) => {
         setLoading(true);
+        console.log(selectedRange);
         const res = await getPortfolioHistory(selectedRange);
 
         // res is the array directly from FastAPI, each item: { time, value }

@@ -14,6 +14,7 @@ async def lifespan(app: FastAPI):
     await create_db_and_tables()
     yield
 
+
 app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
@@ -31,9 +32,6 @@ app.include_router(fastapi_users.get_verify_router(UserRead), prefix="/auth", ta
 app.include_router(fastapi_users.get_users_router(UserRead, UserUpdate), prefix="/users", tags=["users"])
 app.include_router(fastapi_users.get_verify_router(UserRead), prefix="/auth", tags=["auth"])
 app.include_router(user_router)
-
-
-
 
 if __name__ == "__main__":
     uvicorn.run("app.app:app", host="0.0.0.0", port=8000, reload=True)

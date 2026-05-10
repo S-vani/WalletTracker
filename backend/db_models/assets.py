@@ -24,9 +24,16 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     reset_password_token_secret = os.getenv("SECRET")
     verification_token_secret = os.getenv("SECRET")
 
-    async def on_after_register(self, user: models.UP, request: Request | None = None) -> None:
-        # Pass for now but later will add a email verification system
-        pass
+    async def on_after_register(self,
+                                user: User,
+                                request: Request | None = None):
+        await self.request_verify(user, request)
+
+    async def on_after_request_verify(
+        self, user: User, token: str, request: Request | None = None
+    ) -> None:
+        verify_url = f"http://localhost:5173/verify?token={token}"
+        print(verify_url)
 
 
 class Transaction(Base):
