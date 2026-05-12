@@ -647,3 +647,11 @@ async def get_portfolio_value_history(
         })
 
     return data
+
+def is_valid_symbol(item, asset):
+    print(item)
+    symbol = item["symbol"].upper()
+    symbol_starts_with_query = symbol.startswith(asset.upper())
+    no_foreign_exchange_suffix = "." not in item["symbol"]
+    type_is_supported = item.get("type") == "Common Stock"
+    return symbol_starts_with_query and no_foreign_exchange_suffix and type_is_supported

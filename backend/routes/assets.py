@@ -17,7 +17,7 @@ from backend.schemas.assets import CreateTransaction, UpdateTransaction
 from backend.services.asset_services import current_quantity, create_holding_filter, \
     turn_list_to_dict, calculate_profit_for_one_transaction, get_curr_holdings_prices, \
     get_holdings_at_time, get_portfolio_value_at, get_cash_flow_between, get_total_realized_profit, \
-    get_holdings_at_time_list, get_history_of_prices, get_portfolio_value_history
+    get_holdings_at_time_list, get_history_of_prices, get_portfolio_value_history, is_valid_symbol, get_usd_to_cad
 
 load_dotenv()
 router = APIRouter()
@@ -308,22 +308,54 @@ async def get_portfolio_history(
     return data
 
 @router.get("/assets/search")
-async def get_popular_stocks():
-    fmp = os.getenv("API_KEY")
-
-    symbols = "AAPL"
+async def search_assets_stocks(asset: str):
+    finn = os.getenv("API_KEY") # Finnhub api key
 
     url = (
-        f"https://financialmodelingprep.com/stable/search-name"
+        f"https://finnhub.io/api/v1/search"
     )
 
     params = {
-        "apikey": fmp,
-        "query": symbols
+        "token": finn,
+        "q": asset
     }
 
     response = requests.get(url, params=params)
+    data = response.json()
+    result = data["result"]
 
-    # data = response.json()
+    filtered_results = [item for item in result if is_valid_symbol(item, asset)]
 
-    return response
+    if len(filtered_results) > 10:
+        filtered_results = filtered_results[:10]
+
+    final = []
+    for item in filtered_results:
+        url = (
+            f"https://finnhub.io/api/v1/quote"
+        )
+
+        params = {
+            "token": finn,
+            "symbol": item["symbol"]
+        }
+
+        response = requests.get(url, params=params)
+
+        data = response.json()
+
+        if not data.get("c"): # ignore bad results
+            continue
+
+        conversion = await get_usd_to_cad()
+
+        final.append({
+            "symbol": item["symbol"],
+            "name": item["description"],
+            "type": item["type"],
+            "price": data.get("c") * conversion,
+            "change": data.get("d") * conversion,
+            "change_pct": data.get("dp") * conversion,
+        })
+
+    return final
