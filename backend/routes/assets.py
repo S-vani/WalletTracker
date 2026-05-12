@@ -1,7 +1,10 @@
 import asyncio
+import os
 from datetime import datetime, timedelta, timezone
 from typing import Optional, Literal
 import yfinance as yf
+from dotenv import load_dotenv
+import requests
 
 from fastapi import HTTPException, Depends, APIRouter, Query
 from sqlalchemy import select
@@ -16,6 +19,7 @@ from backend.services.asset_services import current_quantity, create_holding_fil
     get_holdings_at_time, get_portfolio_value_at, get_cash_flow_between, get_total_realized_profit, \
     get_holdings_at_time_list, get_history_of_prices, get_portfolio_value_history
 
+load_dotenv()
 router = APIRouter()
 
 
@@ -302,3 +306,24 @@ async def get_portfolio_history(
     data = await get_portfolio_value_history(session, current_user.id, range)
 
     return data
+
+@router.get("/assets/search")
+async def get_popular_stocks():
+    fmp = os.getenv("API_KEY")
+
+    symbols = "AAPL"
+
+    url = (
+        f"https://financialmodelingprep.com/stable/search-name"
+    )
+
+    params = {
+        "apikey": fmp,
+        "query": symbols
+    }
+
+    response = requests.get(url, params=params)
+
+    # data = response.json()
+
+    return response

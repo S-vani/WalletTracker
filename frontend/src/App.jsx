@@ -6,6 +6,7 @@ import HoldingsPage from "./pages/HoldingsPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx"
 import VerifyPage from "./pages/VerifyPage.jsx";
 import SignupPage from "./pages/SignupPage.jsx";
+import HomePage from "./pages/HomePage.jsx";
 
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
             <NavBar/>
             <main className="main-content">
                 <Routes>
+                    <Route path="/" element={<HomePage/>}/>
                     <Route path="/Transactions" element={<TransactionPage/>}/>
                     <Route path="/Dashboard" element={<DashboardPage/>}/>
                     <Route path="/Holdings" element={<HoldingsPage/>}/>

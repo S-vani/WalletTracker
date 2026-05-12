@@ -1,6 +1,8 @@
 import os
 import uuid
 from datetime import datetime, timezone
+import smtplib
+from email.mime.text import MIMEText
 
 from dotenv import load_dotenv
 from fastapi_users import BaseUserManager, UUIDIDMixin, models
@@ -33,7 +35,37 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         self, user: User, token: str, request: Request | None = None
     ) -> None:
         verify_url = f"http://localhost:5173/verify?token={token}"
-        print(verify_url)
+
+        sender = os.getenv("GMAIL_USER")
+        app_pass = os.getenv("GMAIL_PASS")
+
+        user_email = str(user.email)
+
+        email_body = f"""
+        Click on the link below to verify your account:
+        
+        {verify_url}
+        """
+        message = MIMEText(email_body)
+
+        message["Subject"] = "Email Verification"
+        message["From"] = sender
+        message["To"] = user_email
+
+        # start the email server
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+
+        server.starttls()
+
+        server.login(str(sender), str(app_pass))
+
+        server.sendmail(
+            str(sender),
+            user_email,
+            message.as_string()
+        )
+
+        server.quit()
 
 
 class Transaction(Base):

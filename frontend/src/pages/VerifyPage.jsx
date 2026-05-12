@@ -11,9 +11,15 @@ function VerifyPage() {
     }, []);
 
     return(
-        <h1>
-            Verifying...
-        </h1>
+        <div>
+            <h1>
+            Congrats you are now Verified
+            </h1>
+            <p>
+                You may now close this page and login.
+            </p>
+        </div>
+
     )
 }
 

@@ -24,7 +24,7 @@ function SignupForm({onSubmit}){
         <div>
             <form onSubmit={handleSubmit}>
                 <input name="email" placeholder="Email" onChange={handleChange}/>
-                <input name="password" placeholder="Password" onChange={handleChange}/>
+                <input name="password" placeholder="Password" onChange={handleChange} autoComplete="off" type="password"/>
                 <input name="name" placeholder="Full Name" onChange={handleChange}/>
 
                 <button type="submit">Submit</button>

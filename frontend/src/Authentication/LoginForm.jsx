@@ -24,7 +24,7 @@ function LoginForm({onClose, onSubmit}){
         <div>
             <form onSubmit={handleSubmit}>
                 <input name="username" placeholder="Username" onChange={handleChange}/>
-                <input name="password" placeholder="Password" onChange={handleChange}/>
+                <input name="password" placeholder="Password" onChange={handleChange} type="password" autoComplete="off"/>
 
                 <button type="submit">Submit</button>
             </form>
