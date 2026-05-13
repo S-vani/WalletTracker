@@ -180,6 +180,6 @@ export async function verify(params) {
         }
     );
 
-    const data = await res.json();
+    return res.json()
 
 }

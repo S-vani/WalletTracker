@@ -307,9 +307,10 @@ async def get_portfolio_history(
 
     return data
 
+
 @router.get("/assets/search/stock")
 async def search_assets_stocks(asset: str):
-    finn = os.getenv("API_KEY") # Finnhub api key
+    finn = os.getenv("API_KEY")  # Finnhub api key
 
     url = (
         f"https://finnhub.io/api/v1/search"
@@ -344,12 +345,13 @@ async def search_assets_stocks(asset: str):
 
         data = response.json()
 
-        if not data.get("c"): # ignore bad results
+        if not data.get("c"):  # ignore bad results
             continue
 
         conversion = await get_usd_to_cad()
 
         final.append({
+            "api_id": item["symbol"],
             "symbol": item["symbol"],
             "name": item["description"],
             "type": item["type"],
@@ -361,11 +363,8 @@ async def search_assets_stocks(asset: str):
     return final
 
 
-
 @router.get("/assets/search/crypto")
 async def search_assets_crypto(asset: str):
-    # https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin,ethereum&price_change_percentage=24h
-    # https://api.coingecko.com/api/v3/search?query=bt
     gecko = os.getenv("API_KEY_COINEGECKO")
 
     url = (
@@ -376,9 +375,40 @@ async def search_assets_crypto(asset: str):
         "query": asset
     }
 
-    res = requests.get(url, params=params)
+    headers = {
+        "x-cg-demo-api-key": gecko
+    }
 
-    data = res.json()[:10]
+    res = requests.get(url, params=params, headers=headers)
 
-    print(data)
-    return data
+    data = res.json()["coins"][:10]
+
+    ids = ",".join(coin["api_symbol"] for coin in data)
+
+    url = (
+        f"https://api.coingecko.com/api/v3/coins/markets"
+    )
+
+    params = {
+        "vs_currency": "cad",
+        "ids": ids,
+        "price_change_percentage": "24h",
+    }
+
+    response = requests.get(url, params=params, headers=headers)
+
+    data_1 = response.json()
+
+    final = []
+    for coin in data_1:
+        final.append({
+            "api_id": coin["id"],
+            "symbol": coin["symbol"],
+            "type": "crypto",
+            "image": coin["image"], # may or may not use
+            "price": coin["current_price"],
+            "change": coin["price_change_24h"],
+            "change_pct": coin["price_change_percentage_24h"]
+        })
+    
+    return final

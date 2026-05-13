@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="4bf806ef-6a19-406f-95ad-574cf8d11c69" name="Changes" comment="Added a way to search for stocks, the idea is that when a user wants to make a transaction they search a symbol and out comes a bunch of stocks of that symbol with prices, used an api called finnhub. For crypto I will probably use coingecko or something like that.">
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Zenith - Wallet tracker.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/material_theme_project_new.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/pyProjectModel.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/routes/assets.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routes/assets.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;S-vani&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/S-vani/WalletTracker.git&quot;,
+    &quot;accountId&quot;: &quot;8dfd717f-b46a-4734-aab7-75e580770c3b&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3,
+  &quot;fromUser&quot;: false
+}</component>
+  <component name="ProjectId" id="3CoIygYo4HPuMBo0vbCqy6e5V2p" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python.assets.executor": "Run",
+    "Python.images.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.test.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "C:/Users/sh_va/PycharmProjects/Zenith - Wallet tracker",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
+    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\PyCharm 2025.2.1.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "sqlite"
+    ]
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\sh_va\PycharmProjects\WalletTracker\frontend\src\pages" />
+      <recent name="C:\Users\sh_va\PycharmProjects\WalletTracker\frontend\src" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-31caf2ab9e3c-JavaScript-PY-261.23567.174" />
+        <option value="bundled-python-sdk-024ed6589d45-c2ffad84badb-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-261.23567.174" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="4bf806ef-6a19-406f-95ad-574cf8d11c69" name="Changes" comment="" />
+      <created>1777045751554</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1777045751554</updated>
+      <workItem from="1777045752817" duration="4533000" />
+      <workItem from="1777076848411" duration="4529000" />
+      <workItem from="1777225479072" duration="7623000" />
+      <workItem from="1777255799234" duration="488000" />
+      <workItem from="1777256298744" duration="651000" />
+      <workItem from="1777303777721" duration="12127000" />
+      <workItem from="1777341670818" duration="5960000" />
+      <workItem from="1777347837017" duration="3000" />
+      <workItem from="1777390393885" duration="1588000" />
+      <workItem from="1777423631391" duration="6560000" />
+      <workItem from="1777430285735" duration="42000" />
+      <workItem from="1777430339069" duration="270000" />
+      <workItem from="1777486909166" duration="7925000" />
+      <workItem from="1777590296348" duration="10941000" />
+      <workItem from="1777645423281" duration="4424000" />
+      <workItem from="1777668127993" duration="3584000" />
+      <workItem from="1777740073892" duration="1704000" />
+      <workItem from="1777750621943" duration="1945000" />
+      <workItem from="1777850188773" duration="1401000" />
+      <workItem from="1777931107631" duration="5148000" />
+      <workItem from="1777999670954" duration="6440000" />
+      <workItem from="1778027216695" duration="4243000" />
+      <workItem from="1778095432824" duration="12562000" />
+      <workItem from="1778252820195" duration="9235000" />
+      <workItem from="1778336689052" duration="10548000" />
+      <workItem from="1778360234645" duration="2422000" />
+      <workItem from="1778378048724" duration="4818000" />
+      <workItem from="1778596197783" duration="9157000" />
+      <workItem from="1778687598025" duration="1102000" />
+      <workItem from="1778690177676" duration="9000" />
+      <workItem from="1778690193337" duration="481000" />
+      <workItem from="1778690686483" duration="73000" />
+      <workItem from="1778691546472" duration="1495000" />
+    </task>
+    <task id="LOCAL-00001" summary="Created a main file for the wallet tracker to run uvicorn simulations">
+      <option name="closed" value="true" />
+      <created>1777311239344</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1777311239344</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Wrote the entire backend logic, with a fully functional authentication system using JWT tokens and bearer transport. Also created a database using sqlalchemy to store all the data with a couple basic schemas. I made an example Post class as a test but later Il turn it into being fully functional">
+      <option name="closed" value="true" />
+      <created>1777316436457</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1777316436457</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Added a name parameter to the registration field so when a user registers they can input their name">
+      <option name="closed" value="true" />
+      <created>1777345478033</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1777345478033</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Added a new route to verify user">
+      <option name="closed" value="true" />
+      <created>1777347533626</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1777347533626</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Added a new class that tracks transactions by adding them to my db table with multiple parameters">
+      <option name="closed" value="true" />
+      <created>1777430050067</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1777430050067</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Added some routes to get transactions and make some transactions along with services logic which is just functions that handle the long logic like calculating current number of shares/holdings or get all transactions, etc.">
+      <option name="closed" value="true" />
+      <created>1777430115851</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1777430115851</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Added some routes to get transactions using filters, delete transactions with their id and return transactions with specific ids. Added helper functions in the services to have cleaner code">
+      <option name="closed" value="true" />
+      <created>1777491492826</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1777491492826</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Removed forcing user to be verified for now since I havnt even added a verification method so for testing purposes I have set it so current user does not have to be verified">
+      <option name="closed" value="true" />
+      <created>1777492151701</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1777492151701</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Added a way to calculate the profit for every sell so that later it can be easy to calculate total profit by querying all sells and simply adding the profit attribute that they all have">
+      <option name="closed" value="true" />
+      <created>1777495043191</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1777495043191</updated>
+    </task>
+    <task id="LOCAL-00010" summary="New additions to be able to calculate the total portfolio value when user opens the app and also their current profit, as in the profit from the purchase price to how much they would profit if they sold today">
+      <option name="closed" value="true" />
+      <created>1777601247691</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1777601247691</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Changed my mind with profit instead added daily profit, weekly, monthly, yearly and all time profit rather than the previous profit idea since it was nonsensical. Changed multiple functions so they take a timestamp parameter to fetch historical prices of certain crypto and stocks rather than always getting current price to compare what the price of it was 24 hours ago to now, to calculate daily profit">
+      <option name="closed" value="true" />
+      <created>1777652165289</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1777652165289</updated>
+    </task>
+    <task id="LOCAL-00012" summary="removed redundant import statements for cleaner looking code">
+      <option name="closed" value="true" />
+      <created>1777652534449</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1777652534449</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Added a new method to update specific transactions along with a bunch of documentation in the form of docstrings and comments, will add more later before moving onto the front end">
+      <option name="closed" value="true" />
+      <created>1777669988478</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1777669988478</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Added docstrings for all the routes and comments for them">
+      <option name="closed" value="true" />
+      <created>1777671581207</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1777671581207</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Added the basic front end template with the main directories">
+      <option name="closed" value="true" />
+      <created>1777756368752</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1777756368752</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Wrote the basic front end Transaction page to display existing transactions with no css formating yet">
+      <option name="closed" value="true" />
+      <created>1778003565934</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1778003565934</updated>
+    </task>
+    <task id="LOCAL-00017" summary="Added basic way to create transactions, the plan is to create everything without any css styling and add the style at the end. Will work on filtering transactions next before moving onto creating an authentication/login page">
+      <option name="closed" value="true" />
+      <created>1778005429901</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1778005429901</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Added a way to filter transactions by symbol, action (buy or sell) and transaction date">
+      <option name="closed" value="true" />
+      <created>1778031054033</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1778031054033</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Formatted a bunch of files by adding proper spacing and more readable code">
+      <option name="closed" value="true" />
+      <created>1778031130788</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1778031130788</updated>
+    </task>
+    <task id="LOCAL-00020" summary="Added a dashboard page with stats like daily, weekly, monthly, yearly and all time profits, total value, along with a button that goes to another route that tells you what your current holdings are along with the average price you bought it at, will soon make it so next to each holding it says the profit you have on it">
+      <option name="closed" value="true" />
+      <created>1778104965388</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1778104965388</updated>
+    </task>
+    <task id="LOCAL-00021" summary="Each holding now says the current price of it and the profit">
+      <option name="closed" value="true" />
+      <created>1778106006293</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1778106006293</updated>
+    </task>
+    <task id="LOCAL-00022" summary="Added a chart system where when you press on any of your current holdings a chart pops up of the historical prices of that holding, will probably do some more code formatting and documentation in the form of docstrings and comments along with reviewing my code to make minor tweaks before moving onto the next big implementation which will be an authentication page and also a chart with the users historical profits and portfolio value">
+      <option name="closed" value="true" />
+      <created>1778107998647</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1778107998647</updated>
+    </task>
+    <task id="LOCAL-00023" summary="Added comments and doctests for the backend routes">
+      <option name="closed" value="true" />
+      <created>1778254707063</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1778254707063</updated>
+    </task>
+    <task id="LOCAL-00024" summary="Added more comment and docstrings for the backend along with a change to what api is used for fetching prices. For simplicity sake I used yahoo finance for both stocks and crypto due to its ease of use to fetch historical prices and I also tweaked the way I get price history by checking if its a crypto or stock, then making the necessary changes so the parameters are compatable with yahoo finance">
+      <option name="closed" value="true" />
+      <created>1778262065861</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1778262065861</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Added a graph that shows users historical portfolio values over time, also fixed a bug where yahoo finance failed to fetch stock prices because when you passed in the current time it would set the start as 5 mins before, and end as 5 mins after which is in the future causing it to return none">
+      <option name="closed" value="true" />
+      <created>1778346005028</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1778346005028</updated>
+    </task>
+    <task id="LOCAL-00026" summary="Added documentation and simplified code a bit along with clarifying variable names, comments, and docstrings with also removing some excessive variables.">
+      <option name="closed" value="true" />
+      <created>1778347242902</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1778347242902</updated>
+    </task>
+    <task id="LOCAL-00027" summary="Added verification pages for signup and login, made some small tweaks with bugs that I found such as crypto pricing not fetching properly with yahoo finance returning None as a price. Will soon make it so when you signup, an email is sent to you with a link to verify just as a basic overlay before starting to work on css and styling">
+      <option name="closed" value="true" />
+      <created>1778382864438</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1778382864438</updated>
+    </task>
+    <task id="LOCAL-00028" summary="Implemented email system using smtp protocol to send verification link">
+      <option name="closed" value="true" />
+      <created>1778601004412</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1778601004413</updated>
+    </task>
+    <task id="LOCAL-00029" summary="Added a way to search for stocks, the idea is that when a user wants to make a transaction they search a symbol and out comes a bunch of stocks of that symbol with prices, used an api called finnhub. For crypto I will probably use coingecko or something like that.">
+      <option name="closed" value="true" />
+      <created>1778607398429</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1778607398429</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Added a new class that tracks transactions by adding them to my db table with multiple parameters" />
+    <MESSAGE value="Added some routes to get transactions and make some transactions along with services logic which is just functions that handle the long logic like calculating current number of shares/holdings or get all transactions, etc." />
+    <MESSAGE value="Added some routes to get transactions using filters, delete transactions with their id and return transactions with specific ids. Added helper functions in the services to have cleaner code" />
+    <MESSAGE value="Removed forcing user to be verified for now since I havnt even added a verification method so for testing purposes I have set it so current user does not have to be verified" />
+    <MESSAGE value="Added a way to calculate the profit for every sell so that later it can be easy to calculate total profit by querying all sells and simply adding the profit attribute that they all have" />
+    <MESSAGE value="New additions to be able to calculate the total portfolio value when user opens the app and also their current profit, as in the profit from the purchase price to how much they would profit if they sold today" />
+    <MESSAGE value="Changed my mind with profit instead added daily profit, weekly, monthly, yearly and all time profit rather than the previous profit idea since it was nonsensical. Changed multiple functions so they take a timestamp parameter to fetch historical prices of certain crypto and stocks rather than always getting current price to compare what the price of it was 24 hours ago to now, to calculate daily profit" />
+    <MESSAGE value="removed redundant import statements for cleaner looking code" />
+    <MESSAGE value="Added a new method to update specific transactions along with a bunch of documentation in the form of docstrings and comments, will add more later before moving onto the front end" />
+    <MESSAGE value="Added docstrings for all the routes and comments for them" />
+    <MESSAGE value="Added the basic front end template with the main directories" />
+    <MESSAGE value="Wrote the basic front end Transaction page to display existing transactions with no css formating yet" />
+    <MESSAGE value="Added basic way to create transactions, the plan is to create everything without any css styling and add the style at the end. Will work on filtering transactions next before moving onto creating an authentication/login page" />
+    <MESSAGE value="Added a way to filter transactions by symbol, action (buy or sell) and transaction date" />
+    <MESSAGE value="Formatted a bunch of files by adding proper spacing and more readable code" />
+    <MESSAGE value="Added a dashboard page with stats like daily, weekly, monthly, yearly and all time profits, total value, along with a button that goes to another route that tells you what your current holdings are along with the average price you bought it at, will soon make it so next to each holding it says the profit you have on it" />
+    <MESSAGE value="Each holding now says the current price of it and the profit" />
+    <MESSAGE value="Added a chart system where when you press on any of your current holdings a chart pops up of the historical prices of that holding, will probably do some more code formatting and documentation in the form of docstrings and comments along with reviewing my code to make minor tweaks before moving onto the next big implementation which will be an authentication page and also a chart with the users historical profits and portfolio value" />
+    <MESSAGE value="Added comments and doctests for the backend routes" />
+    <MESSAGE value="Added more comment and docstrings for the backend along with a change to what api is used for fetching prices. For simplicity sake I used yahoo finance for both stocks and crypto due to its ease of use to fetch historical prices and I also tweaked the way I get price history by checking if its a crypto or stock, then making the necessary changes so the parameters are compatable with yahoo finance" />
+    <MESSAGE value="Added a graph that shows users historical portfolio values over time, also fixed a bug where yahoo finance failed to fetch stock prices because when you passed in the current time it would set the start as 5 mins before, and end as 5 mins after which is in the future causing it to return none" />
+    <MESSAGE value="Added documentation and simplified code a bit along with clarifying variable names, comments, and docstrings with also removing some excessive variables." />
+    <MESSAGE value="Added verification pages for signup and login, made some small tweaks with bugs that I found such as crypto pricing not fetching properly with yahoo finance returning None as a price. Will soon make it so when you signup, an email is sent to you with a link to verify just as a basic overlay before starting to work on css and styling" />
+    <MESSAGE value="Implemented email system using smtp protocol to send verification link" />
+    <MESSAGE value="Added a way to search for stocks, the idea is that when a user wants to make a transaction they search a symbol and out comes a bunch of stocks of that symbol with prices, used an api called finnhub. For crypto I will probably use coingecko or something like that." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added a way to search for stocks, the idea is that when a user wants to make a transaction they search a symbol and out comes a bunch of stocks of that symbol with prices, used an api called finnhub. For crypto I will probably use coingecko or something like that." />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/WalletTracker$test.coverage" NAME="test Coverage Results" MODIFIED="1777047403500" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Zenith___Wallet_tracker$assets.coverage" NAME="assets Coverage Results" MODIFIED="1778690460690" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend/routes" />
+    <SUITE FILE_PATH="coverage/WalletTracker$images.coverage" NAME="images Coverage Results" MODIFIED="1777230808357" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
+    <SUITE FILE_PATH="coverage/WalletTracker$main.coverage" NAME="main Coverage Results" MODIFIED="1777225614639" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+  </component>
+</project>
