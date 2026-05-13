@@ -307,7 +307,7 @@ async def get_portfolio_history(
 
     return data
 
-@router.get("/assets/search")
+@router.get("/assets/search/stock")
 async def search_assets_stocks(asset: str):
     finn = os.getenv("API_KEY") # Finnhub api key
 
@@ -359,3 +359,26 @@ async def search_assets_stocks(asset: str):
         })
 
     return final
+
+
+
+@router.get("/assets/search/crypto")
+async def search_assets_crypto(asset: str):
+    # https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin,ethereum&price_change_percentage=24h
+    # https://api.coingecko.com/api/v3/search?query=bt
+    gecko = os.getenv("API_KEY_COINEGECKO")
+
+    url = (
+        f"https://api.coingecko.com/api/v3/search"
+    )
+
+    params = {
+        "query": asset
+    }
+
+    res = requests.get(url, params=params)
+
+    data = res.json()[:10]
+
+    print(data)
+    return data
