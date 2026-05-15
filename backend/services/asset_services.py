@@ -649,7 +649,6 @@ async def get_portfolio_value_history(
     return data
 
 def is_valid_symbol(item, asset):
-    print(item)
     symbol = item["symbol"].upper()
     symbol_starts_with_query = symbol.startswith(asset.upper())
     no_foreign_exchange_suffix = "." not in item["symbol"]

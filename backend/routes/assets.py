@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 import requests
 
 from fastapi import HTTPException, Depends, APIRouter, Query
-from sqlalchemy import select
+from sqlalchemy import select, true
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.authentication.authentication import current_active_user
@@ -310,55 +310,65 @@ async def get_portfolio_history(
 
 @router.get("/assets/search/stock")
 async def search_assets_stocks(asset: str):
-    finn = os.getenv("API_KEY")  # Finnhub api key
+    asset = asset.upper()
+    twelve = os.getenv("API_KEY")
+    conversion = await get_usd_to_cad()
 
     url = (
-        f"https://finnhub.io/api/v1/search"
+        f"https://api.twelvedata.com/symbol_search"
     )
 
     params = {
-        "token": finn,
-        "q": asset
+        "symbol":asset,
+        "show_plan": True,
+        "apiKey":twelve
+    }
+
+    search_response = requests.get(url, params=params)
+
+    all_results = search_response.json()["data"]
+
+    filtered = []
+    seen = set()
+    for result in all_results:
+        symbol = result["symbol"]
+        is_us = result.get("country") == "United States"
+        is_valid_type = result.get("instrument_type") in ["Common Stock", "ETF"]
+        is_new = symbol not in seen
+
+        if is_us and is_valid_type and is_new:
+            seen.add(symbol)
+            filtered.append(result)
+
+        if len(filtered) == 5:
+            break
+
+    symbols = ",".join(result["symbol"] for result in filtered)
+
+    url = (
+        f"https://api.twelvedata.com/quote"
+    )
+
+    params = {
+        "symbol": symbols,
+        "apikey": twelve
     }
 
     response = requests.get(url, params=params)
-    data = response.json()
-    result = data["result"]
 
-    filtered_results = [item for item in result if is_valid_symbol(item, asset)]
-
-    if len(filtered_results) > 10:
-        filtered_results = filtered_results[:10]
+    res = response.json()
 
     final = []
-    for item in filtered_results:
-        url = (
-            f"https://finnhub.io/api/v1/quote"
-        )
-
-        params = {
-            "token": finn,
-            "symbol": item["symbol"]
-        }
-
-        response = requests.get(url, params=params)
-
-        data = response.json()
-
-        if not data.get("c"):  # ignore bad results
-            continue
-
-        conversion = await get_usd_to_cad()
-
+    for data in res:
         final.append({
-            "api_id": item["symbol"],
-            "symbol": item["symbol"],
-            "name": item["description"],
-            "type": item["type"],
-            "price": data.get("c") * conversion,
-            "change": data.get("d") * conversion,
-            "change_pct": data.get("dp") * conversion,
+            "api_id": res[data]["symbol"],
+            "symbol": res[data]["symbol"],
+            "type": "stock",
+            "price": float(res[data]["close"]) * conversion,
+            "change": float(res[data]["change"]) * conversion,
+            "change_pct": float(res[data]["percent_change"])
         })
+        print(final)
 
     return final
 
@@ -402,7 +412,7 @@ async def search_assets_crypto(asset: str):
     final = []
     for coin in data_1:
         final.append({
-            "api_id": coin["id"],
+            "api_id": coin["symbol"],
             "symbol": coin["symbol"],
             "type": "crypto",
             "image": coin["image"], # may or may not use
@@ -410,5 +420,5 @@ async def search_assets_crypto(asset: str):
             "change": coin["price_change_24h"],
             "change_pct": coin["price_change_percentage_24h"]
         })
-    
+
     return final
