@@ -321,7 +321,7 @@ async def search_assets_stocks(asset: str):
     params = {
         "symbol":asset,
         "show_plan": True,
-        "apiKey":twelve
+        "apiKey": twelve
     }
 
     search_response = requests.get(url, params=params)

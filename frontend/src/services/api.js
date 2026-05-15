@@ -38,10 +38,6 @@ export async function getTransactions(filters = {}) {
 }
 
 export async function createTransaction(data) {
-    data = {
-        ...data,
-        api_id: String(data.symbol)
-    }
 
     const res = await fetch(`${BASE_URL}/transactions`, {
         method: "POST",
@@ -143,8 +139,6 @@ export async function loginAuthentication(form){
 }
 
 export async function signupAuthentication(form){
-    console.log(form)
-
     const res = await fetch(
         `${BASE_URL}/auth/register`, {
             method: "POST",
@@ -181,5 +175,14 @@ export async function verify(params) {
     );
 
     return res.json()
+}
 
+export async function searchStock(symbol){
+    const res = await fetch(`${BASE_URL}/assets/search/stock?asset=${symbol}`);
+
+    if (!res.ok){
+        throw new Error("search stock error")
+    }
+
+    return res.json()
 }

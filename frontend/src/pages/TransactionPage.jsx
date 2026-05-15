@@ -3,13 +3,20 @@ import {getTransactions} from "../services/api";
 import TransactionList from "../Transactions/TransactionList";
 import TransactionCreate from "../Transactions/TransactionCreate.jsx"
 import TransactionFilter from "../Transactions/TransactionFilter.jsx"
+import TransactionSymbolSearch from "../Transactions/TransactionSymbolSearch.jsx";
 
 function TransactionsPage() {
     const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [showAddForm, setShowAddForm] = useState(false);
-    const [showFilterForm, setShowFilterForm] = useState(false)
+    const [showSearch, setShowSearch] = useState(false);
+    const [showCreate, setShowCreate] = useState(false);
+    const [showFilterForm, setShowFilterForm] = useState(false);
+    const [symbolData, setSymbolData] = useState({
+        "api_id": "",
+        "symbol": "",
+        "type": ""
+    });
 
     const loadTransactions = async (filters = {}) => {
         try {
@@ -36,12 +43,26 @@ function TransactionsPage() {
             {error && <p>{error}</p>}
             <TransactionList transactions={transactions}/>
 
-            <button onClick={() => setShowAddForm(true)}>
+            <button onClick={() => setShowSearch(true)}>
                 Add
             </button>
-            {showAddForm && (
+
+            {showSearch && (
+                <TransactionSymbolSearch
+                    onClose={() => setShowSearch(false)}
+                    onSub={(data) => {
+                        setSymbolData(data)
+                        setShowSearch(false);
+                        setShowCreate(true);
+
+                    }}
+                />
+            )}
+
+            {showCreate && (
                 <TransactionCreate
-                    onClose={() => setShowAddForm(false)}
+                    data={symbolData}
+                    onClose={() => setShowCreate(false)}
                     onCreated={loadTransactions}
                 />
             )}

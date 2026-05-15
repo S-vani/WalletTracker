@@ -35,7 +35,7 @@ async def get_curr_holdings_prices(holdings: dict[str, dict[str, float | str]]):
 
     for ids in holdings:
         if str(holdings[ids]["type"]) == "crypto":
-            crypto.append(str(ids))
+            crypto.append(str(ids).upper()) # .upper for yahoo finance
         elif str(holdings[ids]["type"]) == "stock":
             stocks.append(str(ids))
 

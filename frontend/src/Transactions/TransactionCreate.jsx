@@ -1,13 +1,14 @@
 import {useState} from "react";
 import {createTransaction} from "../services/api.js";
 
-function TransactionCreate({onClose, onCreated}) {
+function TransactionCreate({onClose, onCreated, data}) {
     const [form, setForm] = useState({
-        symbol: "",
+        symbol: data.symbol,
+        api_id: data.api_id,
+        asset_type: data.type,
         quantity: 0.0,
         price_of_one: 0.0,
         action: "BUY",
-        asset_type: ""
     });
 
     const handleChange = (e) => {
@@ -37,8 +38,6 @@ function TransactionCreate({onClose, onCreated}) {
             <h2>Create Transaction</h2>
 
             <form onSubmit={handleSubmit}>
-                <input name="symbol" placeholder="Symbol" onChange={handleChange}/>
-
                 <input name="quantity" type="number" placeholder="Quantity" onChange={handleChange}/>
 
                 <input name="price_of_one" type="number" placeholder="Price" onChange={handleChange}/>
