@@ -113,21 +113,21 @@ export async function getPortfolioHistory(range) {
     return res.json()
 }
 
-export async function loginAuthentication(form){
+export async function loginAuthentication(form) {
     const formData = new URLSearchParams();
 
     formData.append("username", form["username"]);
     formData.append("password", form["password"]);
 
     const res = await fetch(
-        `${BASE_URL}/auth/jwt/login`,{
-            method:"POST",
-            headers:{"Content-Type": "application/x-www-form-urlencoded"},
+        `${BASE_URL}/auth/jwt/login`, {
+            method: "POST",
+            headers: {"Content-Type": "application/x-www-form-urlencoded"},
             body: formData
         }
     )
 
-    if (!res.ok){
+    if (!res.ok) {
         throw new Error("Invalid username or password")
     }
 
@@ -138,7 +138,7 @@ export async function loginAuthentication(form){
     return data
 }
 
-export async function signupAuthentication(form){
+export async function signupAuthentication(form) {
     const res = await fetch(
         `${BASE_URL}/auth/register`, {
             method: "POST",
@@ -151,7 +151,7 @@ export async function signupAuthentication(form){
         }
     )
 
-    if (!res.ok){
+    if (!res.ok) {
         throw new Error("Signup Error")
     }
 
@@ -177,10 +177,10 @@ export async function verify(params) {
     return res.json()
 }
 
-export async function searchStock(symbol){
+export async function searchStock(symbol) {
     const res = await fetch(`${BASE_URL}/assets/search/stock?asset=${symbol}`);
 
-    if (!res.ok){
+    if (!res.ok) {
         throw new Error("search stock error")
     }
 

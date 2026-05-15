@@ -17,7 +17,7 @@ function TransactionSymbolSearch({onClose, onSub}) {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (type === "stock"){
+        if (type === "stock") {
             const data = await searchStock(symbol)
             setResults(data)
             setShowSymbols(true)

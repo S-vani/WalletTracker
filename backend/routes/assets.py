@@ -319,7 +319,7 @@ async def search_assets_stocks(asset: str):
     )
 
     params = {
-        "symbol":asset,
+        "symbol": asset,
         "show_plan": True,
         "apiKey": twelve
     }
@@ -415,7 +415,7 @@ async def search_assets_crypto(asset: str):
             "api_id": coin["symbol"],
             "symbol": coin["symbol"],
             "type": "crypto",
-            "image": coin["image"], # may or may not use
+            "image": coin["image"],  # may or may not use
             "price": coin["current_price"],
             "change": coin["price_change_24h"],
             "change_pct": coin["price_change_percentage_24h"]

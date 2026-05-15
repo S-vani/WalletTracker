@@ -35,7 +35,7 @@ async def get_curr_holdings_prices(holdings: dict[str, dict[str, float | str]]):
 
     for ids in holdings:
         if str(holdings[ids]["type"]) == "crypto":
-            crypto.append(str(ids).upper()) # .upper for yahoo finance
+            crypto.append(str(ids).upper())  # .upper for yahoo finance
         elif str(holdings[ids]["type"]) == "stock":
             stocks.append(str(ids))
 
@@ -204,6 +204,7 @@ async def get_usd_to_cad():
     cad = data.get("rates", {}).get("CAD")
 
     return float(cad)
+
 
 # async def get_crypto_prices_at(api_ids: list[str], timestamp: datetime):
 #     """
@@ -647,6 +648,7 @@ async def get_portfolio_value_history(
         })
 
     return data
+
 
 def is_valid_symbol(item, asset):
     symbol = item["symbol"].upper()

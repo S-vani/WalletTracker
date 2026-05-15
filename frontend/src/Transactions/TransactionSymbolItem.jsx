@@ -11,7 +11,8 @@ function TransactionSymbolItem({data, onSub}) {
                 "api_id": data.api_id,
                 "symbol": data.symbol,
                 "type": data.type
-            })}>Select</button>
+            })}>Select
+            </button>
         </div>
     )
 }
