@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="4bf806ef-6a19-406f-95ad-574cf8d11c69" name="Changes" comment="Wrote some basic CSS for the transactions page and also changed the filtering to be onchange instead of on a submit">
+    <list default="true" id="4bf806ef-6a19-406f-95ad-574cf8d11c69" name="Changes" comment="Finished CSS layout for the transactions page, will work on the navigation system next">
+      <change afterPath="$PROJECT_DIR$/frontend/src/css/Navbar.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/Transactions/TransactionItem.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Transactions/TransactionItem.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/NavBar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/NavBar.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/css/Global.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css/Global.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/css/Transaction.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css/Transaction.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -128,7 +130,8 @@
       <workItem from="1778691546472" duration="1762000" />
       <workItem from="1778875672748" duration="11062000" />
       <workItem from="1778900450769" duration="6756000" />
-      <workItem from="1778944289234" duration="3780000" />
+      <workItem from="1778944289234" duration="4773000" />
+      <workItem from="1778959233392" duration="5551000" />
     </task>
     <task id="LOCAL-00001" summary="Created a main file for the wallet tracker to run uvicorn simulations">
       <option name="closed" value="true" />
@@ -418,7 +421,15 @@
       <option name="project" value="LOCAL" />
       <updated>1778907204707</updated>
     </task>
-    <option name="localTasksCounter" value="37" />
+    <task id="LOCAL-00037" summary="Finished CSS layout for the transactions page, will work on the navigation system next">
+      <option name="closed" value="true" />
+      <created>1778948248089</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1778948248089</updated>
+    </task>
+    <option name="localTasksCounter" value="38" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -436,7 +447,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="removed redundant import statements for cleaner looking code" />
     <MESSAGE value="Added a new method to update specific transactions along with a bunch of documentation in the form of docstrings and comments, will add more later before moving onto the front end" />
     <MESSAGE value="Added docstrings for all the routes and comments for them" />
     <MESSAGE value="Added the basic front end template with the main directories" />
@@ -461,7 +471,8 @@
     <MESSAGE value="Basic formating for some frontend files" />
     <MESSAGE value="User can now pick exactly which crypto they purchased and information is automatically sent rather than manually typing the information in" />
     <MESSAGE value="Wrote some basic CSS for the transactions page and also changed the filtering to be onchange instead of on a submit" />
-    <option name="LAST_COMMIT_MESSAGE" value="Wrote some basic CSS for the transactions page and also changed the filtering to be onchange instead of on a submit" />
+    <MESSAGE value="Finished CSS layout for the transactions page, will work on the navigation system next" />
+    <option name="LAST_COMMIT_MESSAGE" value="Finished CSS layout for the transactions page, will work on the navigation system next" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/WalletTracker$test.coverage" NAME="test Coverage Results" MODIFIED="1777047403500" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

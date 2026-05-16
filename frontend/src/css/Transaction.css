@@ -1,5 +1,6 @@
 .page-headers {
-    margin-left: 7.5rem;
+    margin-left: 10rem;
+    margin-top: 2rem;
 }
 
 .transaction-list {
@@ -163,6 +164,6 @@
 
 .transaction-item-wrapper{
     margin-top: 1rem;
-    margin-left: 7.5rem;
+    margin-left: 10rem;
 
 }

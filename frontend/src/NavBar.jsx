@@ -1,14 +1,78 @@
-import {Link} from "react-router-dom";
+import {NavLink} from "react-router-dom";
+
+import '../src/css/Navbar.css'
 
 function NavBar() {
     return (
         <nav className="navbar">
             <div className="navbar-links">
-                <Link to="/" className="nav-link">Home</Link>
-                <Link to="/Transactions" className="nav-link">Transactions</Link>
-                <Link to="/Dashboard" className="nav-link">Dashboard</Link>
-                <Link to="/login" className="nav-link">Login</Link>
-                <Link to="/signup" className="nav-link">Sign up</Link>
+                <NavLink to="/search"
+                         className={({isActive}) =>
+                             isActive ? "nav-link active": "nav-link"
+                }>
+
+
+                    {({isActive}) => (
+                        <img className="search" src={
+                            isActive
+                                ? "../public/assets/search.png"
+                                : "../public/assets/search.png"
+                        }
+                             alt=""
+                        />
+                    )}
+                </NavLink>
+
+                <NavLink to="/Dashboard"
+                         className={({isActive}) =>
+                             isActive ? "nav-link active": "nav-link"
+                }>
+
+
+                    {({isActive}) => (
+                        <img className="home" src={
+                            isActive
+                                ? "../public/assets/home_active.png"
+                                : "../public/assets/home.png"
+                        }
+                             alt=""
+                        />
+                    )}
+                </NavLink>
+
+                <NavLink to="/Transactions"
+                         className={({isActive}) =>
+                             isActive ? "nav-link active": "nav-link"
+                }>
+
+
+                    {({isActive}) => (
+                        <img className="transaction" src={
+                            isActive
+                                ? "../public/assets/transactions_active.png"
+                                : "../public/assets/transactions.png"
+                        }
+                             alt=""
+                        />
+                    )}
+                </NavLink>
+
+                <NavLink to="/holdings"
+                         className={({isActive}) =>
+                             isActive ? "nav-link active": "nav-link"
+                }>
+
+
+                    {({isActive}) => (
+                        <img className="holding" src={
+                            isActive
+                                ? "../public/assets/holdings.png"
+                                : "../public/assets/holdings.png"
+                        }
+                             alt=""
+                        />
+                    )}
+                </NavLink>
             </div>
         </nav>
     )
