@@ -5,13 +5,14 @@ import TransactionCreate from "../Transactions/TransactionCreate.jsx"
 import TransactionFilter from "../Transactions/TransactionFilter.jsx"
 import TransactionSymbolSearch from "../Transactions/TransactionSymbolSearch.jsx";
 
+import '../css/Transaction.css'
+
 function TransactionsPage() {
     const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [showSearch, setShowSearch] = useState(false);
     const [showCreate, setShowCreate] = useState(false);
-    const [showFilterForm, setShowFilterForm] = useState(false);
     const [symbolData, setSymbolData] = useState({
         "api_id": "",
         "symbol": "",
@@ -38,26 +39,28 @@ function TransactionsPage() {
 
     return (
         <div>
-            <h1>Transactions</h1>
+            <h1 className="page-headers">Transactions</h1>
+
             {loading && <p>Loading...</p>}
             {error && <p>{error}</p>}
             <TransactionList transactions={transactions}/>
 
-            <button onClick={() => setShowSearch(true)}>
-                Add
-            </button>
-            <button onClick={() => setShowFilterForm(true)}>
-                Filter
-            </button>
-
-            {showFilterForm && (
+            <div className="filter-add-section">
+                <h3>
+                    Filters
+                </h3>
+                <div className="filter-rectangle"></div>
                 <TransactionFilter
                     onFiltered={loadTransactions}
-                    onClose={() => setShowFilterForm(false)}
-
                 />
 
-            )}
+                <button className="transaction-button-add" onClick={() => setShowSearch(true)}>
+                    Add Transaction
+                </button>
+            </div>
+
+
+
 
             {showSearch && (
                 <TransactionSymbolSearch

@@ -1,6 +1,6 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
-function TransactionFilter({onFiltered, onClose}) {
+function TransactionFilter({onFiltered}) {
     const [form, setForm] = useState({
         symbol: "",
         action: "",
@@ -16,19 +16,14 @@ function TransactionFilter({onFiltered, onClose}) {
 
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-
-        onClose();
+    useEffect(() => {
         onFiltered(form);
-    };
+    }, [form]);
 
     return (
         <div>
-            <h2>Filter</h2>
-
-            <form onSubmit={handleSubmit}>
-                <input name="symbol" placeholder="Symbol" onChange={handleChange}/>
+            <form className="filter-form">
+                <input className="filter-form-symbol" name="symbol" placeholder="Symbol" onChange={handleChange}/>
 
                 <select name="action" onChange={handleChange}>
                     <option value="">ALL</option>
@@ -37,7 +32,7 @@ function TransactionFilter({onFiltered, onClose}) {
                 </select>
 
                 <div>
-                    <label>Start</label>
+                    <label className="filter-form-date-start">Start</label>
                     <input
                         type="date"
                         name="start_date"
@@ -47,15 +42,13 @@ function TransactionFilter({onFiltered, onClose}) {
 
 
                 <div>
-                    <label>End</label>
+                    <label className="filter-form-date-end">End </label>
                     <input
                         type="date"
                         name="end_date"
                         onChange={handleChange}
                     />
                 </div>
-
-                <button type="submit">Submit</button>
             </form>
         </div>
     )

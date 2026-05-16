@@ -398,7 +398,7 @@ def create_holding_filter(
     query = select(Transaction).where(Transaction.user_id == user_id)
 
     if symbol:
-        query = query.where(Transaction.symbol == symbol)
+        query = query.where(Transaction.symbol.ilike(f"{symbol}%"))
 
     if action:
         query = query.where(Transaction.action == action)
