@@ -1,27 +1,29 @@
-.page-headers{
-
+.page-headers {
+    margin-left: 7.5rem;
 }
 
-.transaction-list{
+.transaction-list {
     display: flex;
     flex-direction: column;
 }
 
-.transaction-button-add{
+.transaction-button-add {
     border: solid black 0.2rem;
     font-weight: 700;
     font-size: 1.5rem;
     width: 15rem;
     height: 5rem;
     border-radius: 0.5rem;
-    background-color: #3B82F6;
+    background-color: #1f1f1f;
     color: #F3F6FC;
     margin-top: 5rem;
 }
 
 .filter-add-section {
+    width: 15rem;
     position: fixed;
     right: 10rem;
+    top: 10rem;
 
     display: flex;
     flex-direction: column;
@@ -30,7 +32,7 @@
     gap: 1rem;
 }
 
-.transaction-button-filter{
+.transaction-button-filter {
     border: solid black 0.2rem;
     width: 3rem;
     height: 3rem;
@@ -38,29 +40,29 @@
     background-color: #F3F6FC;
 }
 
-.filter-form{
+.filter-form {
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
 
-.filter-form-date-start{
+.filter-form-date-start {
     margin-right: 1rem;
 }
 
-.filter-form-date-end{
+.filter-form-date-end {
     margin-right: 1.25rem;
 }
 
-.filter-form div input{
+.filter-form div input {
     width: 11.8rem;
 }
 
-.filter-form-symbol{
+.filter-form-symbol {
     width: 15rem;
 }
 
-.filter-rectangle{
+.filter-rectangle {
     background-color: #F3F6FC;
     opacity: 70%;
     width: 15rem;
@@ -68,7 +70,99 @@
     border-radius: 2rem;
 }
 
-.transaction-button-add:hover{
+.transaction-button-add:hover {
     background-color: #2563EB;
+}
+
+
+.transaction-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    width: 67%;
+
+
+    padding: 1rem 1.5rem;
+
+    background: #1f1f1f;
+
+    border-radius: 1.5rem;
+
+    cursor: pointer;
+
+    transition: background 0.2s ease;
+}
+
+.transaction-item:hover {
+    background: #2a2a2a;
+}
+
+.transaction-left {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.asset-action {
+    display: flex;
+    gap: 0.60rem;
+}
+
+.transaction-right {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+}
+
+.symbol {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.price-paid {
+    font-weight: 600;
+}
+
+.transaction-expanded {
+    width: 67%;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 1rem;
+    background: #2b2b2b;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+/* 2-column layout */
+.transaction-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.3rem 0.5rem;
+}
+
+.transaction-row strong {
+    color: #ccc;
+    font-weight: 900;
+}
+
+.value-stack {
+    display: flex;
+    flex-direction: column;
+}
+
+.divider {
+    height: 1px;
+    background: #3a3a3a;
+    margin: 0.5rem 0;
+    width: 100%;
+}
+
+.transaction-item-wrapper{
+    margin-top: 1rem;
+    margin-left: 7.5rem;
 
 }
