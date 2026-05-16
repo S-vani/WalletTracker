@@ -364,6 +364,7 @@ async def search_assets_stocks(asset: str):
             "api_id": res[data]["symbol"],
             "symbol": res[data]["symbol"],
             "type": "stock",
+            "image": "",
             "price": float(res[data]["close"]) * conversion,
             "change": float(res[data]["change"]) * conversion,
             "change_pct": float(res[data]["percent_change"])

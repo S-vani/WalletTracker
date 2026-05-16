@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="4bf806ef-6a19-406f-95ad-574cf8d11c69" name="Changes" comment=".idea files to commit">
-      <change afterPath="$PROJECT_DIR$/frontend/src/Transactions/TransactionSymbolItem.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/Transactions/TransactionSymbolList.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/Transactions/TransactionSymbolSearch.jsx" afterDir="false" />
+    <list default="true" id="4bf806ef-6a19-406f-95ad-574cf8d11c69" name="Changes" comment="Basic formating for some frontend files">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/routes/assets.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routes/assets.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/services/asset_services.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/services/asset_services.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/Transactions/TransactionCreate.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Transactions/TransactionCreate.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/TransactionPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/TransactionPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Transactions/TransactionSymbolItem.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Transactions/TransactionSymbolItem.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Transactions/TransactionSymbolSearch.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Transactions/TransactionSymbolSearch.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/services/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/services/api.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -129,7 +125,8 @@
       <workItem from="1778690193337" duration="481000" />
       <workItem from="1778690686483" duration="73000" />
       <workItem from="1778691546472" duration="1762000" />
-      <workItem from="1778875672748" duration="10756000" />
+      <workItem from="1778875672748" duration="11062000" />
+      <workItem from="1778900450769" duration="659000" />
     </task>
     <task id="LOCAL-00001" summary="Created a main file for the wallet tracker to run uvicorn simulations">
       <option name="closed" value="true" />
@@ -387,7 +384,23 @@
       <option name="project" value="LOCAL" />
       <updated>1778880674325</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="In the frontend when you add a transaction now you can type a symbol and get returned a list of all the assets starting with those letters and display their current price and change, then you can select it and then enter the information for your transaction">
+      <option name="closed" value="true" />
+      <created>1778886913815</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1778886913815</updated>
+    </task>
+    <task id="LOCAL-00034" summary="Basic formating for some frontend files">
+      <option name="closed" value="true" />
+      <created>1778887003603</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1778887003603</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -405,8 +418,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Removed forcing user to be verified for now since I havnt even added a verification method so for testing purposes I have set it so current user does not have to be verified" />
-    <MESSAGE value="Added a way to calculate the profit for every sell so that later it can be easy to calculate total profit by querying all sells and simply adding the profit attribute that they all have" />
     <MESSAGE value="New additions to be able to calculate the total portfolio value when user opens the app and also their current profit, as in the profit from the purchase price to how much they would profit if they sold today" />
     <MESSAGE value="Changed my mind with profit instead added daily profit, weekly, monthly, yearly and all time profit rather than the previous profit idea since it was nonsensical. Changed multiple functions so they take a timestamp parameter to fetch historical prices of certain crypto and stocks rather than always getting current price to compare what the price of it was 24 hours ago to now, to calculate daily profit" />
     <MESSAGE value="removed redundant import statements for cleaner looking code" />
@@ -430,7 +441,9 @@
     <MESSAGE value="Added a new route in the backend that fetches crypto information based on search, will use it later to allow the use to type in symbols for crypto or stocks and get returned a list of them that they can click, opening a form and automatically sending to the backend the symbol of the asset they pressed" />
     <MESSAGE value="Changed the api im using for stock searching to twelvedata, currently have free plan with 10 api calls a minute but will upgrade before releasing" />
     <MESSAGE value=".idea files to commit" />
-    <option name="LAST_COMMIT_MESSAGE" value=".idea files to commit" />
+    <MESSAGE value="In the frontend when you add a transaction now you can type a symbol and get returned a list of all the assets starting with those letters and display their current price and change, then you can select it and then enter the information for your transaction" />
+    <MESSAGE value="Basic formating for some frontend files" />
+    <option name="LAST_COMMIT_MESSAGE" value="Basic formating for some frontend files" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/WalletTracker$test.coverage" NAME="test Coverage Results" MODIFIED="1777047403500" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

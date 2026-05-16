@@ -46,6 +46,18 @@ function TransactionsPage() {
             <button onClick={() => setShowSearch(true)}>
                 Add
             </button>
+            <button onClick={() => setShowFilterForm(true)}>
+                Filter
+            </button>
+
+            {showFilterForm && (
+                <TransactionFilter
+                    onFiltered={loadTransactions}
+                    onClose={() => setShowFilterForm(false)}
+
+                />
+
+            )}
 
             {showSearch && (
                 <TransactionSymbolSearch
@@ -65,19 +77,6 @@ function TransactionsPage() {
                     onClose={() => setShowCreate(false)}
                     onCreated={loadTransactions}
                 />
-            )}
-
-            <button onClick={() => setShowFilterForm(true)}>
-                Filter
-            </button>
-
-            {showFilterForm && (
-                <TransactionFilter
-                    onFiltered={loadTransactions}
-                    onClose={() => setShowFilterForm(false)}
-
-                />
-
             )}
 
         </div>

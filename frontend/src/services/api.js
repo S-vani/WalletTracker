@@ -186,3 +186,13 @@ export async function searchStock(symbol) {
 
     return res.json()
 }
+
+export async function searchCrypto(symbol) {
+    const res = await fetch(`${BASE_URL}/assets/search/crypto?asset=${symbol}`);
+
+    if (!res.ok) {
+        throw new Error("search stock error")
+    }
+
+    return res.json()
+}

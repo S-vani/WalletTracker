@@ -1,6 +1,5 @@
 import {useState} from "react";
-import TransactionCreate from "./TransactionCreate.jsx";
-import {searchStock} from "../services/api.js";
+import {searchCrypto, searchStock} from "../services/api.js";
 import TransactionSymbolList from "./TransactionSymbolList.jsx";
 
 function TransactionSymbolSearch({onClose, onSub}) {
@@ -22,6 +21,11 @@ function TransactionSymbolSearch({onClose, onSub}) {
             setResults(data)
             setShowSymbols(true)
         }
+        else if (type === "crypto"){
+            const data = await searchCrypto(symbol)
+            setResults(data)
+            setShowSymbols(true)
+        }
 
     };
 
@@ -30,6 +34,7 @@ function TransactionSymbolSearch({onClose, onSub}) {
             <h2>Symbol Search</h2>
 
             <button onClick={() => setType("stock")}>Stock</button>
+            <button onClick={() => setType("crypto")}>Crypto</button>
             <form onSubmit={handleSubmit}>
                 <input name="symbol" placeholder="Symbol" onChange={handleChange}/>
 
