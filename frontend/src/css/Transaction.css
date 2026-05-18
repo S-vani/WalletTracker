@@ -3,6 +3,14 @@
     margin-top: 2rem;
 }
 
+.loading,
+.error {
+    margin-left: 10rem;
+    margin-top: 2rem;
+    text-transform: uppercase;
+    font-size: 1.1rem;
+}
+
 .transaction-list {
     display: flex;
     flex-direction: column;
@@ -16,34 +24,31 @@
     height: 5rem;
     border-radius: 0.5rem;
 
-    background:
-        linear-gradient(
+    background: linear-gradient(
             145deg,
             #070b14,
             #05070d
-        );
+    );
 
     color: #F3F6FC;
 
-    box-shadow:
-        0 0 0 0.05rem #070b12,
-        0 0.5rem 2.5rem #000000cc;
+    box-shadow: 0 0 0 0.05rem #070b12,
+    0 0.5rem 2.5rem #000000cc;
 }
 
 .transaction-button-add:hover {
-    background:
-        linear-gradient(
+    background: linear-gradient(
             145deg,
             #0a1020,
             #080b16
-        );
+    );
 }
 
 .filter-add-section {
     width: 15rem;
     position: fixed;
     right: 7.5rem;
-    top: 10rem;
+    top: 9rem;
 
     display: flex;
     flex-direction: column;
@@ -89,8 +94,6 @@
     height: 0.05rem;
     border-radius: 2rem;
 }
-
-
 
 .transaction-item {
     display: flex;
@@ -178,7 +181,7 @@
     width: 100%;
 }
 
-.transaction-item-wrapper{
+.transaction-item-wrapper {
     margin-top: 1rem;
     margin-left: 10rem;
 
@@ -196,20 +199,18 @@
 
     padding: 1.5rem;
 
-    background:
-        linear-gradient(
+    background: linear-gradient(
             145deg,
             #070b14,
             #05070d
-        );
+    );
 
     border: 0.1rem solid #0f1725;
 
     border-radius: 1.25rem;
 
-    box-shadow:
-        0 0 0 0.05rem #070b12,
-        0 0.5rem 2.5rem #000000cc;
+    box-shadow: 0 0 0 0.05rem #070b12,
+    0 0.5rem 2.5rem #000000cc;
 
     backdrop-filter: blur(1rem);
 }
@@ -241,12 +242,11 @@
 
     border: 0.05rem solid #0f1725;
 
-    background:
-        linear-gradient(
+    background: linear-gradient(
             180deg,
             #0b1220,
             #070b14
-        );
+    );
 
     color: #f5f7ff;
 
@@ -255,11 +255,10 @@
 
     outline: none;
 
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease,
-        transform 0.15s ease,
-        background 0.2s ease;
+    transition: border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease,
+    background 0.2s ease;
 }
 
 .filter-input::placeholder {
@@ -270,20 +269,19 @@
 .filter-select:hover {
     border-color: #1b2a44;
 
-    background:
-        linear-gradient(
+    background: linear-gradient(
             180deg,
             #0d1526,
             #080c15
-        );
+    );
 }
+
 .filter-input:focus,
 .filter-select:focus {
     border-color: #2f4a7a;
 
-    box-shadow:
-        0 0 0 0.25rem #2f4a7a33,
-        0 0 1.125rem #2f4a7a44;
+    box-shadow: 0 0 0 0.25rem #2f4a7a33,
+    0 0 1.125rem #2f4a7a44;
 
     transform: translateY(-0.0625rem);
 }
@@ -295,21 +293,19 @@
     -webkit-appearance: none;
     -moz-appearance: none;
 
-    background-image:
-        linear-gradient(
+    background-image: linear-gradient(
             45deg,
             transparent 50%,
             #f5f7ff 50%
-        ),
-        linear-gradient(
+    ),
+    linear-gradient(
             135deg,
             #f5f7ff 50%,
             transparent 50%
-        );
+    );
 
-    background-position:
-        calc(100% - 1.25rem) calc(50%),
-        calc(100% - 0.875rem) calc(50%);
+    background-position: calc(100% - 1.25rem) calc(50%),
+    calc(100% - 0.875rem) calc(50%);
 
     background-size: 0.4rem 0.4rem;
 
@@ -359,4 +355,23 @@
 .filter-date-input::-webkit-datetime-edit-year-field:focus {
     background: #2f4a7a22;
     border-radius: 0.25rem;
+}
+
+.transaction-item {
+    opacity: 0;
+    transform: translateY(-0.75rem);
+
+    animation: fadeIn 2s ease forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-0.75rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

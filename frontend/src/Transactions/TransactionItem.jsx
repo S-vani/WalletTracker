@@ -1,10 +1,10 @@
 import {useState} from "react";
 
-function TransactionItem({transaction}) {
+function TransactionItem({transaction, index}) {
     const [expanded, setExpanded] = useState(false);
     return (
         <div className="transaction-item-wrapper">
-            <div className="transaction-item" onClick={() => setExpanded(!expanded)}>
+            <div className="transaction-item" style={{ animationDelay: `${index * 0.1}s` }} onClick={() => setExpanded(!expanded)}>
                 <div className="transaction-left">
                     <p className="symbol">
                         {transaction.symbol}

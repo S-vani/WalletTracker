@@ -1,9 +1,9 @@
 
-.navbar{
+.navbar {
 
 }
 
-.navbar-links{
+.navbar-links {
     display: flex;
     flex-direction: column;
     position: fixed;
@@ -13,28 +13,36 @@
 
     left: 2rem;
     top: 15%;
-
 }
 
-.navbar-links img{
+.navbar-links img {
     width: 1.5rem;
-    height: 1.5rem;
-}
-
-.navbar-links .home{
-    width: 1.5rem;
-    height: 1.5rem;
-}
-
-.navbar-links .holding{
-    width: 1.9rem;
     height: 1.5rem;
     align-items: center;
 }
 
-.navbar-links .transaction{
+.navbar-links .home {
+    width: 1.5rem;
+    height: 1.5rem;
+    align-items: center;
+}
+
+.navbar-links .holding {
+    width: 2.164rem;
+    height: 1.55rem;
+    align-items: center;
+}
+
+.navbar-links .transaction {
     width: 1.5rem;
     height: 1.7rem;
+    align-items: center;
+}
+
+.navbar-links .profile {
+    width: 1.5rem;
+    height: 1.5rem;
+
 }
 
 .nav-link {
@@ -48,11 +56,11 @@
 
 .nav-link:hover,
 .nav-link.active {
-    background-color: rgba(255,255,255,0.1);
+    background-color: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(1rem);
 
 }
 
-.nav-link:hover img{
+.nav-link:hover img {
     filter: brightness(3);
 }

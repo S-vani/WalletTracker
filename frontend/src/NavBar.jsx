@@ -8,8 +8,8 @@ function NavBar() {
             <div className="navbar-links">
                 <NavLink to="/search"
                          className={({isActive}) =>
-                             isActive ? "nav-link active": "nav-link"
-                }>
+                             isActive ? "nav-link active" : "nav-link"
+                         }>
 
 
                     {({isActive}) => (
@@ -25,8 +25,8 @@ function NavBar() {
 
                 <NavLink to="/Dashboard"
                          className={({isActive}) =>
-                             isActive ? "nav-link active": "nav-link"
-                }>
+                             isActive ? "nav-link active" : "nav-link"
+                         }>
 
 
                     {({isActive}) => (
@@ -42,8 +42,8 @@ function NavBar() {
 
                 <NavLink to="/Transactions"
                          className={({isActive}) =>
-                             isActive ? "nav-link active": "nav-link"
-                }>
+                             isActive ? "nav-link active" : "nav-link"
+                         }>
 
 
                     {({isActive}) => (
@@ -59,15 +59,33 @@ function NavBar() {
 
                 <NavLink to="/holdings"
                          className={({isActive}) =>
-                             isActive ? "nav-link active": "nav-link"
-                }>
+                             isActive ? "nav-link active" : "nav-link"
+                         }>
 
 
                     {({isActive}) => (
                         <img className="holding" src={
                             isActive
-                                ? "../public/assets/holdings.png"
+                                ? "../public/assets/holdings_active.png"
                                 : "../public/assets/holdings.png"
+                        }
+                             alt=""
+                        />
+                    )}
+                </NavLink>
+
+
+                <NavLink to="/login"
+                         className={({isActive}) =>
+                             isActive ? "nav-link active" : "nav-link"
+                         }>
+
+
+                    {({isActive}) => (
+                        <img className="profile" src={
+                            isActive
+                                ? "../public/assets/profile_active.png"
+                                : "../public/assets/profile.png"
                         }
                              alt=""
                         />

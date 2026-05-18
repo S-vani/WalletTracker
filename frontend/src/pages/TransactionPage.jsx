@@ -41,8 +41,8 @@ function TransactionsPage() {
         <div>
             <h1 className="page-headers">Transactions</h1>
 
-            {loading && <p>Loading...</p>}
-            {error && <p>{error}</p>}
+            {loading && <p className="loading">Loading...</p>}
+            {error && <p className="error">{error}</p>}
             <TransactionList transactions={transactions}/>
 
             <div className="filter-add-section">
