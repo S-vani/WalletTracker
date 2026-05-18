@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
 
+
+/* Basic resetting and layout */
 * {
     margin: 0;
     padding: 0;
@@ -12,11 +14,6 @@ body,
     width: 100%;
     min-height: 100%;
     font-size: clamp(12px, 1.1vw, 16px);
-}
-
-body {
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
 }
 
 img,
@@ -45,8 +42,12 @@ ol {
     list-style: none;
 }
 
+/* Actual css */
 body {
-    font-family:
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+
+        font-family:
         'Lato',
         sans-serif;
 
@@ -54,6 +55,9 @@ body {
     color: #F3F6FC;
 
     min-height: 100vh;
+
+    position: relative;
+    overflow-x: hidden;
 }
 
 button {
@@ -73,4 +77,50 @@ input {
 
 .page {
     padding: 2rem;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+
+    background:
+        radial-gradient(
+            circle at 20% 20%,
+            #0a142a 0%,
+            transparent 55%
+        ),
+        radial-gradient(
+            circle at 80% 30%,
+            #0b1733 0%,
+            transparent 60%
+        ),
+        radial-gradient(
+            circle at 50% 80%,
+            #070d1a 0%,
+            transparent 60%
+        );
+
+    filter: blur(3rem);
+    opacity: 1;
+
+    animation: bg-pulse 5s ease-in-out infinite alternate;
+}
+
+@keyframes bg-pulse {
+    0% {
+        transform: translate3d(-4%, -4%, 0) scale(1.1);
+        filter: blur(3.5rem) brightness(0.65);
+    }
+
+    50% {
+        transform: translate3d(0%, 0%, 0) scale(1.15);
+        filter: blur(3rem) brightness(0.95);
+    }
+
+    100% {
+        transform: translate3d(4%, 4%, 0) scale(1.08);
+        filter: blur(3.8rem) brightness(0.6);
+    }
 }
