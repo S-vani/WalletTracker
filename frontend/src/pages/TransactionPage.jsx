@@ -11,8 +11,7 @@ function TransactionsPage() {
     const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [showSearch, setShowSearch] = useState(false);
-    const [showCreate, setShowCreate] = useState(false);
+    const [step, setStep] = useState("closed");
     const [symbolData, setSymbolData] = useState({
         "api_id": "",
         "symbol": "",
@@ -54,33 +53,44 @@ function TransactionsPage() {
                     onFiltered={loadTransactions}
                 />
 
-                <button className="transaction-button-add" onClick={() => setShowSearch(true)}>
+                <button className="transaction-button-add" onClick={() => setStep("search")}>
                     Add Transaction
                 </button>
             </div>
 
 
 
+            {step !== "closed" && (
+                <div className="transaction-create-overlay">
+                    <div className="transaction-create-box">
+                        <button className="transaction-create-close-button" onClick={() => {setStep("closed")}}>
+                            <img src="../../public/assets/close.png" alt=""/>
+                        </button>
 
-            {showSearch && (
-                <TransactionSymbolSearch
-                    onClose={() => setShowSearch(false)}
-                    onSub={(data) => {
-                        setSymbolData(data)
-                        setShowSearch(false);
-                        setShowCreate(true);
+                        {step === "search" && (
+                            <TransactionSymbolSearch
+                                onSub={(data) => {
+                                    setSymbolData(data);
+                                    setStep("create");
+                                }}
+                            />
+                        )}
 
-                    }}
-                />
+                        {step === "create" && (
+                            <TransactionCreate
+                                data={symbolData}
+                                onClose={() => setStep("closed")}
+                                onCreated={() => {
+                                    loadTransactions();
+                                    setStep("closed");
+                                }}
+                            />
+                        )}
+
+                    </div>
+                </div>
             )}
 
-            {showCreate && (
-                <TransactionCreate
-                    data={symbolData}
-                    onClose={() => setShowCreate(false)}
-                    onCreated={loadTransactions}
-                />
-            )}
 
         </div>
     );

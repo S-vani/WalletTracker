@@ -2,7 +2,7 @@ import {useState} from "react";
 import {searchCrypto, searchStock} from "../services/api.js";
 import TransactionSymbolList from "./TransactionSymbolList.jsx";
 
-function TransactionSymbolSearch({onClose, onSub}) {
+function TransactionSymbolSearch({onSub}) {
     const [type, setType] = useState("stock")
     const [symbol, setSymbol] = useState("");
     const [results, setResults] = useState([]);
@@ -30,7 +30,7 @@ function TransactionSymbolSearch({onClose, onSub}) {
     };
 
     return (
-        <div>
+        <div className="transaction-symbol-wrapper">
             <h2>Symbol Search</h2>
 
             <button onClick={() => setType("stock")}>Stock</button>
@@ -40,8 +40,6 @@ function TransactionSymbolSearch({onClose, onSub}) {
 
                 <button type="submit">Submit</button>
             </form>
-
-            <button onClick={onClose}>Close</button>
 
             {showSymbols && (
                 <TransactionSymbolList

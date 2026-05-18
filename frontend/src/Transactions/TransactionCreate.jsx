@@ -34,10 +34,10 @@ function TransactionCreate({onClose, onCreated, data}) {
 
 
     return (
-        <div>
+        <div className="transaction-create-wrapper">
             <h2>Create Transaction</h2>
 
-            <form onSubmit={handleSubmit}>
+            <form className="transaction-create-form" onSubmit={handleSubmit}>
                 <input name="quantity" type="number" placeholder="Quantity" onChange={handleChange}/>
 
                 <input name="price_of_one" type="number" placeholder="Price" onChange={handleChange}/>
