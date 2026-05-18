@@ -64,7 +64,7 @@ function TransactionsPage() {
                 <div className="transaction-create-overlay">
                     <div className="transaction-create-box">
                         <button className="transaction-create-close-button" onClick={() => {setStep("closed")}}>
-                            <img src="../../public/assets/close.png" alt=""/>
+                            <img src="/assets/close.png" alt=""/>
                         </button>
 
                         {step === "search" && (

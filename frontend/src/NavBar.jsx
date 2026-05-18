@@ -15,8 +15,8 @@ function NavBar() {
                     {({isActive}) => (
                         <img className="search" src={
                             isActive
-                                ? "../public/assets/search.png"
-                                : "../public/assets/search.png"
+                                ? "/assets/search.png"
+                                : "/assets/search.png"
                         }
                              alt=""
                         />
@@ -32,8 +32,8 @@ function NavBar() {
                     {({isActive}) => (
                         <img className="home" src={
                             isActive
-                                ? "../public/assets/home_active.png"
-                                : "../public/assets/home.png"
+                                ? "/assets/home_active.png"
+                                : "/assets/home.png"
                         }
                              alt=""
                         />
@@ -49,8 +49,8 @@ function NavBar() {
                     {({isActive}) => (
                         <img className="transaction" src={
                             isActive
-                                ? "../public/assets/transactions_active.png"
-                                : "../public/assets/transactions.png"
+                                ? "/assets/transactions_active.png"
+                                : "/assets/transactions.png"
                         }
                              alt=""
                         />
@@ -66,8 +66,8 @@ function NavBar() {
                     {({isActive}) => (
                         <img className="holding" src={
                             isActive
-                                ? "../public/assets/holdings_active.png"
-                                : "../public/assets/holdings.png"
+                                ? "/assets/holdings_active.png"
+                                : "/assets/holdings.png"
                         }
                              alt=""
                         />
@@ -84,8 +84,8 @@ function NavBar() {
                     {({isActive}) => (
                         <img className="profile" src={
                             isActive
-                                ? "../public/assets/profile_active.png"
-                                : "../public/assets/profile.png"
+                                ? "/assets/profile_active.png"
+                                : "/assets/profile.png"
                         }
                              alt=""
                         />
