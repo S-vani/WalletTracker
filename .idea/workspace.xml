@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="4bf806ef-6a19-406f-95ad-574cf8d11c69" name="Changes" comment="Finished css layout for the navbar and uploaded some assets to use for it, the assets are made using ai but edited myself">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/Transactions/TransactionFilter.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Transactions/TransactionFilter.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/css/Global.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css/Global.css" afterDir="false" />
+    <list default="true" id="4bf806ef-6a19-406f-95ad-574cf8d11c69" name="Changes" comment="Finished css layout for the filtering on the transaction page">
       <change beforePath="$PROJECT_DIR$/frontend/src/css/Transaction.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/css/Transaction.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -131,7 +128,7 @@
       <workItem from="1778900450769" duration="6756000" />
       <workItem from="1778944289234" duration="4773000" />
       <workItem from="1778959233392" duration="5788000" />
-      <workItem from="1779126327543" duration="2185000" />
+      <workItem from="1779126327543" duration="2502000" />
     </task>
     <task id="LOCAL-00001" summary="Created a main file for the wallet tracker to run uvicorn simulations">
       <option name="closed" value="true" />
@@ -437,7 +434,15 @@
       <option name="project" value="LOCAL" />
       <updated>1778966761978</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="Finished css layout for the filtering on the transaction page">
+      <option name="closed" value="true" />
+      <created>1779128767445</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1779128767445</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -455,7 +460,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added docstrings for all the routes and comments for them" />
     <MESSAGE value="Added the basic front end template with the main directories" />
     <MESSAGE value="Wrote the basic front end Transaction page to display existing transactions with no css formating yet" />
     <MESSAGE value="Added basic way to create transactions, the plan is to create everything without any css styling and add the style at the end. Will work on filtering transactions next before moving onto creating an authentication/login page" />
@@ -480,7 +484,8 @@
     <MESSAGE value="Wrote some basic CSS for the transactions page and also changed the filtering to be onchange instead of on a submit" />
     <MESSAGE value="Finished CSS layout for the transactions page, will work on the navigation system next" />
     <MESSAGE value="Finished css layout for the navbar and uploaded some assets to use for it, the assets are made using ai but edited myself" />
-    <option name="LAST_COMMIT_MESSAGE" value="Finished css layout for the navbar and uploaded some assets to use for it, the assets are made using ai but edited myself" />
+    <MESSAGE value="Finished css layout for the filtering on the transaction page" />
+    <option name="LAST_COMMIT_MESSAGE" value="Finished css layout for the filtering on the transaction page" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/WalletTracker$test.coverage" NAME="test Coverage Results" MODIFIED="1777047403500" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

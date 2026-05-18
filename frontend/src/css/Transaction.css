@@ -9,14 +9,34 @@
 }
 
 .transaction-button-add {
-    border: solid black 0.2rem;
+    border: 0.05rem solid #0f1725;
     font-weight: 700;
     font-size: 1.5rem;
     width: 15rem;
     height: 5rem;
     border-radius: 0.5rem;
-    background-color: #1f1f1f;
+
+    background:
+        linear-gradient(
+            145deg,
+            #070b14,
+            #05070d
+        );
+
     color: #F3F6FC;
+
+    box-shadow:
+        0 0 0 0.05rem #070b12,
+        0 0.5rem 2.5rem #000000cc;
+}
+
+.transaction-button-add:hover {
+    background:
+        linear-gradient(
+            145deg,
+            #0a1020,
+            #080b16
+        );
 }
 
 .filter-add-section {
@@ -70,9 +90,6 @@
     border-radius: 2rem;
 }
 
-.transaction-button-add:hover {
-    background-color: #2563EB;
-}
 
 
 .transaction-item {
@@ -186,7 +203,7 @@
             #05070d
         );
 
-    border: 0.05rem solid #0f1725;
+    border: 0.1rem solid #0f1725;
 
     border-radius: 1.25rem;
 
