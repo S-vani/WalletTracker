@@ -413,7 +413,7 @@
 
     animation: fadeIn 0.5s ease forwards;
 
-    width: 55%;
+    width: 65%;
     min-height: 50rem;
     position: relative;
 
@@ -455,13 +455,13 @@
     gap: 1.5rem;
 }
 
-.search-buttons{
+.search-buttons {
     display: flex;
     flex-direction: row;
     gap: 1.4rem;
 }
 
-.search-button{
+.search-button {
     border-radius: 0.5rem;
     transition: width 0.25s ease, height 0.25s ease;
     align-items: center;
@@ -484,7 +484,7 @@
     justify-content: center;
 }
 
-.search-button.active{
+.search-button.active {
     border: 0.1rem solid #f5f7ff;
 
     background: linear-gradient(
@@ -494,32 +494,30 @@
     );
 
 
-    box-shadow:
-        0 0 0.4rem rgba(255,255,255,0.7),
-        0 0 1rem rgba(255,255,255,0.45),
-        0 0 2rem rgba(180,220,255,0.25);
+    box-shadow: 0 0 0.4rem rgba(255, 255, 255, 0.7),
+    0 0 1rem rgba(255, 255, 255, 0.45),
+    0 0 2rem rgba(180, 220, 255, 0.25);
 }
 
-.search-button:hover{
+.search-button:hover {
     transition: width 0.25s ease, height 0.25s ease;
     width: 7rem;
     height: 2.5rem;
     font-size: 1.15rem;
 
-    box-shadow:
-        0 0 0.6rem rgba(255,255,255,0.7),
-        0 0 0.8rem rgba(255,255,255,0.5),
-        0 0 1.2rem rgba(180,220,255,0.2);
+    box-shadow: 0 0 0.6rem rgba(255, 255, 255, 0.7),
+    0 0 0.8rem rgba(255, 255, 255, 0.5),
+    0 0 1.2rem rgba(180, 220, 255, 0.2);
 }
 
-.symbol-search-form{
+.symbol-search-form {
     display: flex;
     flex-direction: row;
     gap: 1rem;
     align-items: center;
 }
 
-.symbol-search-input{
+.symbol-search-input {
     height: 3.5rem;
 
 
@@ -552,7 +550,7 @@
     color: #5a6785;
 }
 
-.symbol-search-input:hover{
+.symbol-search-input:hover {
     border-color: #1b2a44;
 
     background: linear-gradient(
@@ -562,7 +560,7 @@
     );
 }
 
-.symbol-search-input:focus{
+.symbol-search-input:focus {
     border-color: #2f4a7a;
 
     box-shadow: 0 0 0 0.25rem #2f4a7a33,
@@ -571,25 +569,73 @@
     transform: translateY(-0.0625rem);
 }
 
-.symbol-search-form button{
+.symbol-search-form button {
     height: 3rem;
     width: 6rem;
     font-size: 1.1rem;
     border-radius: 1rem;
 }
 
-.symbol-search-form button:hover{
+.symbol-search-form button:hover {
     height: 3.2rem;
     width: 6.2rem;
 
-    box-shadow:
-        0 0 0.4rem rgba(255,255,255,0.8),
-        0 0 0.7rem rgba(255,255,255,0.6),
-        0 0 1.3rem rgba(180,220,255,0.3);
+    box-shadow: 0 0 0.4rem rgba(255, 255, 255, 0.8),
+    0 0 0.7rem rgba(255, 255, 255, 0.6),
+    0 0 1.3rem rgba(180, 220, 255, 0.3);
 }
 
-.loading-search{
+.loading-search {
     font-size: 1.1rem;
     color: #f5f7ff;
 
+}
+
+.transaction-symbol-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.8rem;
+    width: 100%;
+}
+
+.transaction-symbol-item-wrapper {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+
+    grid-template-areas:
+        "symbol price"
+        "type change";
+
+    padding: 1rem;
+    border-radius: 1rem;
+
+    background: rgba(255, 255, 255, 0.05);
+    gap: 0.3rem;
+
+    min-height: 4rem;
+}
+
+
+.select-btn {
+    grid-column: 1 / -1;
+    justify-self: center;
+
+    font-size: 0.75rem;
+}
+
+.symbol {
+    grid-area: symbol;
+}
+
+.type {
+    grid-area: type;
+}
+
+.price {
+    grid-area: price;
+}
+
+.change-wrapper {
+    grid-area: change;
 }

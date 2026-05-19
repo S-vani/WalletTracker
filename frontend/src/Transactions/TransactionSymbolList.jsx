@@ -2,7 +2,7 @@ import TransactionSymbolItem from "./TransactionSymbolItem.jsx";
 
 function TransactionSymbolList({data, onSub}) {
     return (
-        <div>
+        <div className="transaction-symbol-list">
             {data.map(d => (
                 <TransactionSymbolItem key={d.api_id} data={d} onSub={onSub}/>
             ))}
