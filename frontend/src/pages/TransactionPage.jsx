@@ -88,8 +88,6 @@ function TransactionsPage() {
                     </div>
                 </div>
             )}
-
-
         </div>
     );
 }

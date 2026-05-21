@@ -37,18 +37,20 @@ function TransactionCreate({onClose, onCreated, data}) {
         <div className="transaction-create-wrapper">
             <h2>Create Transaction</h2>
 
-            <form className="transaction-create-form" onSubmit={handleSubmit}>
-                <input name="quantity" type="number" placeholder="Quantity" onChange={handleChange}/>
+            <form className="create-transaction-form" autoComplete="off" onSubmit={handleSubmit}>
+                <div className="quantity-price-buy">
+                    <input className="create-transaction-input" autoComplete="off" name="quantity" placeholder="Quantity" onChange={handleChange}/>
+                    <input  className="create-transaction-input" autoComplete="off" name="price_of_one" placeholder="Price of one" onChange={handleChange}/>
 
-                <input name="price_of_one" type="number" placeholder="Price" onChange={handleChange}/>
-
-                <select name="action" onChange={handleChange}>
-                    <option value="BUY">BUY</option>
-                    <option value="SELL">SELL</option>
-                </select>
-
-                <button type="submit">Submit</button>
-                <button type="button" onClick={onClose}>Cancel</button>
+                    <select className="create-select" name="action" onChange={handleChange}>
+                        <option value="BUY">BUY</option>
+                        <option value="SELL">SELL</option>
+                    </select>
+                </div>
+                <div className="create-transaction-buttons">
+                    <button className="create-transaction-button green" type="submit">Submit</button>
+                    <button className="create-transaction-button red" type="button" onClick={onClose}>Cancel</button>
+                </div>
             </form>
         </div>
     );

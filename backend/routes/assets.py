@@ -327,6 +327,7 @@ async def search_assets_stocks(asset: str):
     search_response = requests.get(url, params=params)
 
     all_results = search_response.json()["data"]
+    # print(all_results)
 
     filtered = []
     seen = set()
@@ -359,17 +360,28 @@ async def search_assets_stocks(asset: str):
     res = response.json()
 
     final = []
-    for data in res:
+    if "symbol" in res:
         final.append({
-            "api_id": res[data]["symbol"],
-            "symbol": res[data]["symbol"],
+            "api_id": res["symbol"],
+            "symbol": res["symbol"],
             "type": "stock",
             "image": "",
-            "price": float(res[data]["close"]) * float(conversion),
-            "change": float(res[data]["change"]) * float(conversion),
-            "change_pct": float(res[data]["percent_change"])
+            "price": float(res["close"]) * float(conversion),
+            "change": float(res["change"]) * float(conversion),
+            "change_pct": float(res["percent_change"])
         })
-        print(final)
+    else:
+        for data in res:
+            final.append({
+                "api_id": res[data]["symbol"],
+                "symbol": res[data]["symbol"],
+                "type": "stock",
+                "image": "",
+                "price": float(res[data]["close"]) * float(conversion),
+                "change": float(res[data]["change"]) * float(conversion),
+                "change_pct": float(res[data]["percent_change"])
+            })
+            print(final)
 
     return final
 

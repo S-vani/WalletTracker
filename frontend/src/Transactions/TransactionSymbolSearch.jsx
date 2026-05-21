@@ -68,7 +68,9 @@ function TransactionSymbolSearch({onSub}) {
                     className="symbol-search-input"
                     name="symbol"
                     placeholder={getPlaceholder()}
-                    onChange={handleChange}/>
+                    onChange={handleChange}
+                    autoComplete="off"/>
+
 
                 <button className={type === "" ? "search-button red" : "search-button"} type="submit">Search</button>
             </form>

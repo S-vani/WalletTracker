@@ -34,6 +34,7 @@ function TransactionFilter({onFiltered}) {
                         name="symbol"
                         placeholder="AAPL, BTC, TSLA..."
                         onChange={handleChange}
+                        autoComplete="off"
                     />
                 </div>
 
@@ -46,6 +47,7 @@ function TransactionFilter({onFiltered}) {
                         className="filter-select"
                         name="action"
                         onChange={handleChange}
+                        autoComplete="off"
                     >
                         <option value="">ALL</option>
                         <option value="BUY">BUY</option>
@@ -63,6 +65,7 @@ function TransactionFilter({onFiltered}) {
                         type="date"
                         name="start_date"
                         onChange={handleChange}
+                        autoComplete="off"
                     />
                 </div>
 
@@ -76,6 +79,7 @@ function TransactionFilter({onFiltered}) {
                         type="date"
                         name="end_date"
                         onChange={handleChange}
+                        autoComplete="off"
                     />
                 </div>
 
