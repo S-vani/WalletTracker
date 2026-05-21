@@ -340,7 +340,7 @@ async def search_assets_stocks(asset: str):
             seen.add(symbol)
             filtered.append(result)
 
-        if len(filtered) == 5:
+        if len(filtered) == 6:
             break
 
     symbols = ",".join(result["symbol"] for result in filtered)
@@ -365,8 +365,8 @@ async def search_assets_stocks(asset: str):
             "symbol": res[data]["symbol"],
             "type": "stock",
             "image": "",
-            "price": float(res[data]["close"]) * conversion,
-            "change": float(res[data]["change"]) * conversion,
+            "price": float(res[data]["close"]) * float(conversion),
+            "change": float(res[data]["change"]) * float(conversion),
             "change_pct": float(res[data]["percent_change"])
         })
         print(final)
@@ -392,7 +392,7 @@ async def search_assets_crypto(asset: str):
 
     res = requests.get(url, params=params, headers=headers)
 
-    data = res.json()["coins"][:10]
+    data = res.json()["coins"][:6]
 
     ids = ",".join(coin["api_symbol"] for coin in data)
 
@@ -412,6 +412,12 @@ async def search_assets_crypto(asset: str):
 
     final = []
     for coin in data_1:
+        if (
+            coin.get("current_price") is None
+            or coin.get("price_change_24h") is None
+            or coin.get("price_change_percentage_24h") is None
+        ):
+            continue
         final.append({
             "api_id": coin["symbol"],
             "symbol": coin["symbol"],

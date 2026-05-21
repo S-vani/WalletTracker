@@ -461,55 +461,6 @@
     gap: 1.4rem;
 }
 
-.search-button {
-    border-radius: 0.5rem;
-    transition: width 0.25s ease, height 0.25s ease;
-    align-items: center;
-    font-size: 1rem;
-
-    border: 0.05rem solid #0f1725;
-
-    background: linear-gradient(
-            180deg,
-            #0f1f45,
-            #0d1526
-    );
-
-    color: #f5f7ff;
-
-    font-weight: 500;
-    width: 6.5rem;
-    height: 2.3rem;
-    display: flex;
-    justify-content: center;
-}
-
-.search-button.active {
-    border: 0.1rem solid #f5f7ff;
-
-    background: linear-gradient(
-            180deg,
-            #17305f,
-            #162238
-    );
-
-
-    box-shadow: 0 0 0.4rem rgba(255, 255, 255, 0.7),
-    0 0 1rem rgba(255, 255, 255, 0.45),
-    0 0 2rem rgba(180, 220, 255, 0.25);
-}
-
-.search-button:hover {
-    transition: width 0.25s ease, height 0.25s ease;
-    width: 7rem;
-    height: 2.5rem;
-    font-size: 1.15rem;
-
-    box-shadow: 0 0 0.6rem rgba(255, 255, 255, 0.7),
-    0 0 0.8rem rgba(255, 255, 255, 0.5),
-    0 0 1.2rem rgba(180, 220, 255, 0.2);
-}
-
 .symbol-search-form {
     display: flex;
     flex-direction: row;
@@ -569,21 +520,64 @@
     transform: translateY(-0.0625rem);
 }
 
-.symbol-search-form button {
-    height: 3rem;
-    width: 6rem;
-    font-size: 1.1rem;
-    border-radius: 1rem;
+
+.search-button {
+    border-radius: 0.5rem;
+    transition: width 0.25s ease, height 0.25s ease;
+    align-items: center;
+    font-size: 1rem;
+
+    border: 0.05rem solid #0f1725;
+
+    background: linear-gradient(
+            180deg,
+            #0f1f45,
+            #0d1526
+    );
+
+    color: #f5f7ff;
+
+    font-weight: 500;
+    width: 6.5rem;
+    height: 2.3rem;
+    display: flex;
+    justify-content: center;
 }
 
-.symbol-search-form button:hover {
-    height: 3.2rem;
-    width: 6.2rem;
+.search-button.active {
+    border: 0.1rem solid #f5f7ff;
 
-    box-shadow: 0 0 0.4rem rgba(255, 255, 255, 0.8),
-    0 0 0.7rem rgba(255, 255, 255, 0.6),
-    0 0 1.3rem rgba(180, 220, 255, 0.3);
+    background: linear-gradient(
+            180deg,
+            #17305f,
+            #162238
+    );
+
+
+    box-shadow: 0 0 0.4rem rgba(255, 255, 255, 0.7),
+    0 0 1rem rgba(255, 255, 255, 0.45),
+    0 0 2rem rgba(180, 220, 255, 0.25);
 }
+
+.search-button:hover {
+    transition: width 0.25s ease, height 0.25s ease;
+    width: 7rem;
+    height: 2.5rem;
+    font-size: 1.15rem;
+
+    box-shadow: 0 0 0.6rem rgba(255, 255, 255, 0.7),
+    0 0 0.8rem rgba(255, 255, 255, 0.5),
+    0 0 1.2rem rgba(180, 220, 255, 0.2);
+}
+
+.search-button.red {
+    background: linear-gradient(
+            180deg,
+            #7A1F1F,
+            #B22222
+    );
+}
+
 
 .loading-search {
     font-size: 1.1rem;
@@ -622,14 +616,65 @@
     justify-self: center;
 
     font-size: 0.75rem;
+
+    border-radius: 0.5rem;
+    transition: width 0.25s ease, height 0.25s ease;
+    align-items: center;
+
+    border: 0.05rem solid #0f1725;
+
+    background: linear-gradient(
+            180deg,
+            #0f1f45,
+            #0d1526
+    );
+
+    color: #f5f7ff;
+    margin-top: 0.3rem;
+    transform: translateX(-0.5rem);
+
+    font-weight: 400;
+    width: 5rem;
+    height: 1.75rem;
+    display: flex;
+    justify-content: center;
+}
+
+.select-btn:hover {
+    transition: width 0.25s ease, height 0.25s ease;
+    width: 5.1rem;
+    height: 1.81rem;
+    font-size: 0.9rem;
+
+    box-shadow: 0 0 0.3rem rgba(255, 255, 255, 0.7),
+    0 0 0.4rem rgba(255, 255, 255, 0.5),
+    0 0 1.0rem rgba(180, 220, 255, 0.2);
+
 }
 
 .symbol {
     grid-area: symbol;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    /*gap: 0.2rem;*/
 }
+
+.symbol-text {
+    text-transform: uppercase;
+    transform: translateX(0.35rem);
+}
+
+.symbol-image img {
+    width: 1.4rem;
+    height: 1.4rem;
+
+}
+
 
 .type {
     grid-area: type;
+    margin-left: 0.2rem;
 }
 
 .price {
@@ -638,4 +683,19 @@
 
 .change-wrapper {
     grid-area: change;
+}
+
+.change-pct.negative,
+.change-number.negative {
+    color: #ef4444;
+
+}
+
+.change-pct.positive,
+.change-number.positive {
+    color: #22c55e;
+}
+
+.change-number {
+    margin-right: 0.3rem;
 }

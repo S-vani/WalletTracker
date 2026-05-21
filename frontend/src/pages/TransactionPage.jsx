@@ -67,14 +67,12 @@ function TransactionsPage() {
                             <img src="/assets/close.png" alt=""/>
                         </button>
 
-                        {step === "search" && (
-                            <TransactionSymbolSearch
-                                onSub={(data) => {
-                                    setSymbolData(data);
-                                    setStep("create");
-                                }}
-                            />
-                        )}
+                        <TransactionSymbolSearch
+                            onSub={(data) => {
+                                setSymbolData(data);
+                                setStep("create");
+                            }}
+                        />
 
                         {step === "create" && (
                             <TransactionCreate

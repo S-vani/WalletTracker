@@ -7,18 +7,23 @@ function TransactionSymbolSearch({onSub}) {
     const [symbol, setSymbol] = useState("");
     const [results, setResults] = useState([]);
     const [showSymbols, setShowSymbols] = useState(false)
+    const [selectedSymbol, setSelectedSymbol] = useState(null);
     const [loading, setLoading] = useState(false)
 
-    const getPlaceholder = () =>{
-        if(type === "stock"){
+    const getPlaceholder = () => {
+        if (type === "stock") {
             return "AAPL, NVDA, GOOG"
-        }
-        else if (type === "crypto"){
+        } else if (type === "crypto") {
             return "BTC, SOL, ETH"
-        }
-        else{
+        } else {
             return "Select a type above"
         }
+    }
+
+    const onSubSymbols = (data, selected) =>{
+        onSub(data);
+        setShowSymbols(false)
+        setSelectedSymbol(selected)
     }
 
 
@@ -34,8 +39,7 @@ function TransactionSymbolSearch({onSub}) {
             const data = await searchStock(symbol)
             setResults(data)
             setShowSymbols(true)
-        }
-        else if (type === "crypto"){
+        } else if (type === "crypto") {
             const data = await searchCrypto(symbol)
             setResults(data)
             setShowSymbols(true)
@@ -66,7 +70,7 @@ function TransactionSymbolSearch({onSub}) {
                     placeholder={getPlaceholder()}
                     onChange={handleChange}/>
 
-                <button className="search-button" type="submit">Search</button>
+                <button className={type === "" ? "search-button red" : "search-button"} type="submit">Search</button>
             </form>
 
             {loading && (
@@ -76,8 +80,40 @@ function TransactionSymbolSearch({onSub}) {
             {showSymbols && (
                 <TransactionSymbolList
                     data={results}
-                    onSub={onSub}
+                    onSub={onSubSymbols}
                 />
+            )}
+
+            {selectedSymbol !== null && (
+                <div className="transaction-symbol-item-wrapper">
+                    <div className="symbol">
+                        <span className="symbol-image">
+                            {
+                                selectedSymbol.image !== "" && (
+                                    <img src={selectedSymbol.image} alt=""/>
+                                )}
+                        </span>
+
+                        <span className="symbol-text">{selectedSymbol.symbol}</span>
+                    </div>
+
+                    <div className="price">
+                        ${Number(selectedSymbol.price).toFixed(2)}
+                    </div>
+
+                    <div className="type">
+                        {selectedSymbol.type}
+                    </div>
+
+                    <div className="change">
+                        <span>
+                            ${Number(selectedSymbol.change).toFixed(2)}
+                        </span>
+                        <span >
+                            ({selectedSymbol.change_pct.toFixed(2)}%)
+                        </span>
+                    </div>
+                </div>
             )}
         </div>
     );
